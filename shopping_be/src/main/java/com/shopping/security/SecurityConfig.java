@@ -31,6 +31,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> requests
+        		.requestMatchers(HttpMethod.POST, "/api/orders").hasAnyAuthority(ADMIN, USER)
+                .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyAuthority(ADMIN, USER)
+                .requestMatchers("/api/orders", "/api/orders/**").hasAuthority(ADMIN)
+                .requestMatchers("/api/users", "/api/users/**").hasAuthority(ADMIN)
                 .requestMatchers("/public/**", "/auth/**").permitAll()
                 .requestMatchers("/", "/error", "/csrf").permitAll()
                 .anyRequest().authenticated()
