@@ -12,7 +12,7 @@ public class BookMapperImpl implements BookMapper {
 	public BookDto toBookDto(Book book) {
 		if (book == null)
 			return null;
-		return new BookDto(book.getId(), book.getTitle(), book.getAuthor(), book.getDescription(), book.getReleaseDate(), book.getPageNum(), book.getCategory(), book.getImgUrl());
+		return new BookDto(book.getId(), book.getTitle(), book.getAuthor(), book.getDescription(), book.getReleaseDate(), book.getPageNum(), book.getCategory(), book.getPrice(), book.getImgUrl());
 	}
 
 	

@@ -22,6 +22,7 @@ public class Book {
 	private Date releaseDate;
 	private int pageNum;
 	private String category;
+	private Long price;	
 	private String imgUrl;
 	
 }

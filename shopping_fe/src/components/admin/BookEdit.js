@@ -4,7 +4,6 @@ import { storeApi } from '../misc/StoreApi';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { handleLogError } from '../misc/Helpers'
 import { Button, Container, Form, Grid, Header, Image, Label } from 'semantic-ui-react';
-// import ImageUpload from '../misc/ImageUpload';
 
 function BookEdit() {
     const { getUser } = useAuth()
@@ -19,47 +18,13 @@ function BookEdit() {
         releaseDate: '',
         pageNum: 0,
         category: '',
+        price: 0,
         imgUrl: ''
     };
 
     const [book, setBook] = useState(initialFormState);
     const navigate = useNavigate();
     const { id } = useParams();
-
-    // const [imageBase64, setImageBase64] = useState('');
-    // const imageUrlToBase64 = (imageUrl) => {
-    //     return new Promise((resolve, reject) => {
-    //         const xhr = new XMLHttpRequest();
-    //         xhr.open('GET', imageUrl, true);
-    //         xhr.responseType = 'blob';
-
-    //         xhr.onload = () => {
-    //             if (xhr.status === 200) {
-    //                 const reader = new FileReader();
-    //                 reader.onloadend = () => {
-    //                     resolve(reader.result);
-    //                 };
-    //                 reader.onerror = reject;
-    //                 reader.readAsDataURL(xhr.response);
-    //             } else {
-    //                 reject(new Error('Image load failed. Status: ' + xhr.status));
-    //             }
-    //         };
-
-    //         xhr.onerror = reject;
-    //         xhr.send();
-    //     });
-    // };
-
-    // const imageToBase64 = async () => {
-    //     try {
-    //         const base64Data = await imageUrlToBase64(book.imgUrl)
-    //         console.log(book.imgUrl)
-    //         setImageBase64(base64Data.split(',')[1])
-    //     } catch (error) {
-    //         console.error('Error converting image to base64:', error)
-    //     }
-    // };
 
     useEffect(() => {
         setIsAdmin(user.data.rol[0] === 'ADMIN')
@@ -74,10 +39,6 @@ function BookEdit() {
         }
        
     }, [])
-    
-    // if (imageBase64 === '') {
-    //     imageToBase64()
-    // }
     
     if (!isAdmin) {
         return <Navigate to='/' />
@@ -101,7 +62,6 @@ function BookEdit() {
 
     const handleReaderLoaded = (e) => {
         const binaryString = e.target.result;
-        // setImageBase64(btoa(binaryString));
         setBook({ ...book, imgUrl: btoa(binaryString) })
     }
 
@@ -133,10 +93,15 @@ function BookEdit() {
                                     <Form.Input fluid className='required' label='Release Date' name='releaseDate' type='date' value={book.releaseDate} onChange={handleChange} />
                                     <Form.Input fluid label='Page Number' name='pageNum' type='number' value={book.pageNum} onChange={handleChange} />
                                 </Form.Group>
-                                <Form.Input fluid label='Category' name='category' placeholder='Category' value={book.category} onChange={handleChange} />
+                                <Form.Group widths='equal'>
+                                    <Form.Input fluid label='Category' name='category' placeholder='Category' value={book.category} onChange={handleChange} />
+                                    <Form.Input fluid label='Price' labelPosition='right' name='price' type='number' value={book.price} onChange={handleChange}>
+                                        <input />
+                                        <Label>VNĐ</Label>
+                                    </Form.Input>
+                                </Form.Group>
                             </Grid.Column>
                             <Grid.Column width={8}>
-                                {/* <ImageUpload base64Data={imageBase64} setBase64Data={setImageBase64} /> */}
                                 <Label as="label" basic htmlFor="upload" >
                                     <Button
                                         icon="upload"
@@ -155,7 +120,6 @@ function BookEdit() {
                                         onChange={e => onChangeImage(e)}
                                     />
                                 </Label>
-                                {/* {imageBase64 != '' && <Image src={`data:image;base64,${imageBase64}`} size="small" rounded />} */}
                                 {book.imgUrl.startsWith('/imgs/') ? <Image src={book.imgUrl} size="small" rounded /> : <Image src={`data:image/jpeg;base64,${book.imgUrl}`} size="small" rounded /> }
                             </Grid.Column>
                         </Grid.Row>
