@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Navigate } from 'react-router-dom'
 import { Container } from 'semantic-ui-react'
 import AuthContext from '../context/AuthContext'
-import { orderApi } from '../misc/OrderApi'
+import { storeApi } from '../misc/StoreApi'
 import AdminTab from './AdminTab'
 import { handleLogError } from '../misc/Helpers'
 
@@ -12,12 +12,14 @@ class AdminPage extends Component {
     state = {
         users: [],
         orders: [],
+        books: [],
         orderDescription: '',
         orderTextSearch: '',
         userUsernameSearch: '',
         isAdmin: true,
         isUsersLoading: false,
         isOrdersLoading: false,
+        isBooksLoading: false
     }
 
     componentDidMount() {
@@ -28,6 +30,7 @@ class AdminPage extends Component {
 
         this.handleGetUsers()
         this.handleGetOrders()
+        this.handleGetBooks()
     }
 
     handleInputChange = (e, { name, value }) => {
@@ -39,7 +42,7 @@ class AdminPage extends Component {
         const user = Auth.getUser()
 
         this.setState({ isUsersLoading: true })
-        orderApi.getUsers(user)
+        storeApi.getUsers(user)
             .then(response => {
                 this.setState({ users: response.data })
             })
@@ -55,7 +58,7 @@ class AdminPage extends Component {
         const Auth = this.context
         const user = Auth.getUser()
 
-        orderApi.deleteUser(user, username)
+        storeApi.deleteUser(user, username)
             .then(() => {
                 this.handleGetUsers()
             })
@@ -69,7 +72,7 @@ class AdminPage extends Component {
         const user = Auth.getUser()
 
         const username = this.state.userUsernameSearch
-        orderApi.getUsers(user, username)
+        storeApi.getUsers(user, username)
             .then(response => {
                 const data = response.data
                 const users = data instanceof Array ? data : [data]
@@ -86,7 +89,7 @@ class AdminPage extends Component {
         const user = Auth.getUser()
 
         this.setState({ isOrdersLoading: true })
-        orderApi.getOrders(user)
+        storeApi.getOrders(user)
             .then(response => {
                 this.setState({ orders: response.data })
             })
@@ -102,7 +105,7 @@ class AdminPage extends Component {
         const Auth = this.context
         const user = Auth.getUser()
 
-        orderApi.deleteOrder(user, isbn)
+        storeApi.deleteOrder(user, isbn)
             .then(() => {
                 this.handleGetOrders()
             })
@@ -122,7 +125,7 @@ class AdminPage extends Component {
         }
 
         const order = { description: orderDescription }
-        orderApi.createOrder(user, order)
+        storeApi.createOrder(user, order)
             .then(() => {
                 this.handleGetOrders()
                 this.setState({ orderDescription: '' })
@@ -137,7 +140,7 @@ class AdminPage extends Component {
         const user = Auth.getUser()
 
         const text = this.state.orderTextSearch
-        orderApi.getOrders(user, text)
+        storeApi.getOrders(user, text)
             .then(response => {
                 const orders = response.data
                 this.setState({ orders })
@@ -148,11 +151,41 @@ class AdminPage extends Component {
             })
     }
 
+    handleGetBooks = () => {
+        const Auth = this.context
+        const user = Auth.getUser()
+
+        this.setState({ isBooksLoading: true })
+        storeApi.getBooks(user)
+            .then(response => {
+                this.setState({ books: response.data })
+            })
+            .catch(error => {
+                handleLogError(error)
+            })
+            .finally(() => {
+                this.setState({ isBooksLoading: false })
+            })
+    }
+
+    handleDeleteBook = (isbn) => {
+        const Auth = this.context
+        const user = Auth.getUser()
+
+        storeApi.deleteBook(user, isbn)
+            .then(() => {
+                this.handleGetBooks()
+            })
+            .catch(error => {
+                handleLogError(error)
+            })
+    }
+
     render() {
         if (!this.state.isAdmin) {
             return <Navigate to='/' />
         } else {
-            const { isUsersLoading, users, userUsernameSearch, isOrdersLoading, orders, orderDescription, orderTextSearch } = this.state
+            const { isUsersLoading, users, userUsernameSearch, isOrdersLoading, orders, orderDescription, orderTextSearch, books, isBooksLoading } = this.state
             return (
                 <Container>
                     <AdminTab
@@ -169,6 +202,9 @@ class AdminPage extends Component {
                         handleDeleteOrder={this.handleDeleteOrder}
                         handleSearchOrder={this.handleSearchOrder}
                         handleInputChange={this.handleInputChange}
+                        books={books}
+                        handleDeleteBook={this.handleDeleteBook}
+                        isBooksLoading={isBooksLoading}
                     />
                 </Container>
             )

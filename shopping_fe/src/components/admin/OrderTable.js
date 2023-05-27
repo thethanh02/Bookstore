@@ -14,6 +14,10 @@ function OrderTable({ orders, orderDescription, orderTextSearch, handleInputChan
         orderList = orders.map(order => {
             return (
                 <Table.Row key={order.id}>
+                    <Table.Cell>{order.id}</Table.Cell>
+                    <Table.Cell>{order.user.username}</Table.Cell>
+                    <Table.Cell>{order.createdAt}</Table.Cell>
+                    <Table.Cell>{order.description}</Table.Cell>
                     <Table.Cell collapsing>
                         <Button
                             circular
@@ -23,10 +27,6 @@ function OrderTable({ orders, orderDescription, orderTextSearch, handleInputChan
                             onClick={() => handleDeleteOrder(order.id)}
                         />
                     </Table.Cell>
-                    <Table.Cell>{order.id}</Table.Cell>
-                    <Table.Cell>{order.user.username}</Table.Cell>
-                    <Table.Cell>{order.createdAt}</Table.Cell>
-                    <Table.Cell>{order.description}</Table.Cell>
                 </Table.Row>
             )
         })
@@ -59,11 +59,11 @@ function OrderTable({ orders, orderDescription, orderTextSearch, handleInputChan
             <Table compact striped selectable>
                 <Table.Header>
                     <Table.Row>
-                        <Table.HeaderCell width={1} />
                         <Table.HeaderCell width={5}>ID</Table.HeaderCell>
                         <Table.HeaderCell width={2}>Username</Table.HeaderCell>
                         <Table.HeaderCell width={4}>Created At</Table.HeaderCell>
                         <Table.HeaderCell width={4}>Description</Table.HeaderCell>
+                        <Table.HeaderCell width={1} />
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>

@@ -3,7 +3,7 @@ package com.shopping.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import com.shopping.exception.OrderNotFoundException;
+import com.shopping.exception.EntityNotFoundException;
 import com.shopping.model.Order;
 import com.shopping.repository.OrderRepository;
 
@@ -28,7 +28,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order validateAndGetOrder(String id) {
         return orderRepository.findById(id)
-                .orElseThrow(() -> new OrderNotFoundException(String.format("Order with id %s not found", id)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Order with id %s not found", id)));
     }
 
     @Override

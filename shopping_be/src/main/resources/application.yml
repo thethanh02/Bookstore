@@ -16,7 +16,7 @@ app:
     # In http://www.allkeysgenerator.com/ you can generate all kinds of keys
     secret: v9y$B&E)H@MbQeThWmZq4t7w!z%C*F-JaNdRfUjXn2r5u8x/A?D(G+KbPeShVkYp
     expiration:
-      minutes: 10
+      minutes: 60
   cors:
     allowed-origins: http://localhost:3000
 

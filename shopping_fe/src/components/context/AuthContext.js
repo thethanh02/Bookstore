@@ -47,7 +47,7 @@ class AuthProvider extends Component {
         const { getUser, userIsAuthenticated, userLogin, userLogout } = this
 
         return (
-            <AuthContext.Provider value={{ user, getUser, userIsAuthenticated, userLogin, userLogout, }}>
+            <AuthContext.Provider value={{ user, getUser, userIsAuthenticated, userLogin, userLogout }}>
                 {children}
             </AuthContext.Provider>
         )

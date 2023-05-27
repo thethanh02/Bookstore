@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { NavLink, Navigate } from 'react-router-dom'
 import { Button, Form, Grid, Segment, Message } from 'semantic-ui-react'
 import AuthContext from '../context/AuthContext'
-import { orderApi } from '../misc/OrderApi'
+import { storeApi } from '../misc/StoreApi'
 import { parseJwt, handleLogError } from '../misc/Helpers'
 
 class Signup extends Component {
@@ -41,7 +41,7 @@ class Signup extends Component {
         }
 
         const user = { username, password, name, email }
-        orderApi.signup(user)
+        storeApi.signup(user)
             .then(response => {
                 const { accessToken } = response.data
                 const data = parseJwt(accessToken)

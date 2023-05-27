@@ -2,7 +2,7 @@ import axios from 'axios'
 import { config } from '../../Constants'
 import { parseJwt } from './Helpers'
 
-export const orderApi = {
+export const storeApi = {
     authenticate,
     signup,
     numberOfUsers,
@@ -12,7 +12,12 @@ export const orderApi = {
     getOrders,
     deleteOrder,
     createOrder,
-    getUserMe
+    getUserMe,
+    getBooks,
+    deleteBook,
+    getBook,
+    createBook,
+    updateBook
 }
 
 function authenticate(username, password) {
@@ -72,6 +77,40 @@ function createOrder(user, order) {
 
 function getUserMe(user) {
     return instance.get('/api/users/me', {
+        headers: { 'Authorization': bearerAuth(user) }
+    })
+}
+
+function getBooks(user) {
+    const url = '/api/books'
+    return instance.get(url, {
+        headers: { 'Authorization': bearerAuth(user) }
+    })
+}
+
+function deleteBook(user, bookId) {
+    return instance.delete(`/api/books/${bookId}`, {
+        headers: { 'Authorization': bearerAuth(user) }
+    })
+}
+
+function getBook(user, bookId) {
+    const url = `/api/books/${bookId}`
+    return instance.get(url, {
+        headers: { 'Authorization': bearerAuth(user) }
+    })
+}
+
+function createBook(user, book) {
+    const url = `/api/books/new`
+    return instance.post(url, book, {
+        headers: { 'Authorization': bearerAuth(user) }
+    })
+}
+
+function updateBook(user, bookId, book) {
+    const url = `/api/books/${bookId}`
+    return instance.put(url, book, {
         headers: { 'Authorization': bearerAuth(user) }
     })
 }

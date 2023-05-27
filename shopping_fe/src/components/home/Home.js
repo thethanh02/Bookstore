@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Statistic, Icon, Grid, Container, Segment, Dimmer, Loader } from 'semantic-ui-react'
-import { orderApi } from '../misc/OrderApi'
+import { storeApi } from '../misc/StoreApi'
 import { handleLogError } from '../misc/Helpers'
 
 class Home extends Component {
@@ -13,10 +13,10 @@ class Home extends Component {
     async componentDidMount() {
         this.setState({ isLoading: true })
         try {
-            let response = await orderApi.numberOfUsers()
+            let response = await storeApi.numberOfUsers()
             const numberOfUsers = response.data
 
-            response = await orderApi.numberOfOrders()
+            response = await storeApi.numberOfOrders()
             const numberOfOrders = response.data
 
             this.setState({ numberOfUsers, numberOfOrders })
@@ -46,7 +46,7 @@ class Home extends Component {
                             <Grid.Column textAlign='center'>
                                 <Segment color='teal'>
                                     <Statistic>
-                                        <Statistic.Value><Icon name='user' color='grey' />{numberOfUsers}</Statistic.Value>
+                                        <Statistic.Value><Icon name='user' color='grey' />{' '}{numberOfUsers}</Statistic.Value>
                                         <Statistic.Label>Users</Statistic.Label>
                                     </Statistic>
                                 </Segment>
@@ -54,7 +54,7 @@ class Home extends Component {
                             <Grid.Column textAlign='center'>
                                 <Segment color='teal'>
                                     <Statistic>
-                                        <Statistic.Value><Icon name='laptop' color='grey' />{numberOfOrders}</Statistic.Value>
+                                        <Statistic.Value><Icon name='box' color='grey' />{' '}{numberOfOrders}</Statistic.Value>
                                         <Statistic.Label>Orders</Statistic.Label>
                                     </Statistic>
                                 </Segment>

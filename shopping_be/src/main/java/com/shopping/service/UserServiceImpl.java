@@ -3,7 +3,7 @@ package com.shopping.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import com.shopping.exception.UserNotFoundException;
+import com.shopping.exception.EntityNotFoundException;
 import com.shopping.model.User;
 import com.shopping.repository.UserRepository;
 
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User validateAndGetUserByUsername(String username) {
         return getUserByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException(String.format("User with username %s not found", username)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format("User with username %s not found", username)));
     }
 
     @Override

@@ -16,6 +16,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
@@ -35,6 +37,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyAuthority(ADMIN, USER)
                 .requestMatchers("/api/orders", "/api/orders/**").hasAuthority(ADMIN)
                 .requestMatchers("/api/users", "/api/users/**").hasAuthority(ADMIN)
+                .requestMatchers("/api/books", "/api/books/**").hasAuthority(ADMIN)
                 .requestMatchers("/public/**", "/auth/**").permitAll()
                 .requestMatchers("/", "/error", "/csrf").permitAll()
                 .anyRequest().authenticated()
@@ -44,7 +47,7 @@ public class SecurityConfig {
         http.sessionManagement((session) -> session
         		.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     		);
-        http.cors().and().csrf().disable();
+        http.cors(withDefaults()).csrf(csrf -> csrf.disable());
         return http.build();
     }
 

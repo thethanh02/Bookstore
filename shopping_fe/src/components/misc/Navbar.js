@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Container, Menu } from 'semantic-ui-react'
 import { useAuth } from '../context/AuthContext'
 
-function Navbar() {
+const Navbar = () => {
     const { getUser, userIsAuthenticated, userLogout } = useAuth()
 
     const logout = () => {
@@ -39,6 +39,7 @@ function Navbar() {
                 <Menu.Item header>Order-UI</Menu.Item>
                 <Menu.Item as={Link} exact='true' to="/">Home</Menu.Item>
                 <Menu.Item as={Link} to="/adminpage" style={adminPageStyle()}>AdminPage</Menu.Item>
+                <Menu.Item as={Link} to="/books" style={adminPageStyle()}>Books</Menu.Item>
                 <Menu.Item as={Link} to="/userpage" style={userPageStyle()}>UserPage</Menu.Item>
                 <Menu.Menu position='right'>
                     <Menu.Item as={Link} to="/login" style={enterMenuStyle()}>Login</Menu.Item>

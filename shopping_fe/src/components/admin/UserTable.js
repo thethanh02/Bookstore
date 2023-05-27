@@ -13,6 +13,11 @@ function UserTable({ users, userUsernameSearch, handleInputChange, handleDeleteU
         userList = users.map(user => {
             return (
                 <Table.Row key={user.id}>
+                    <Table.Cell>{user.id}</Table.Cell>
+                    <Table.Cell>{user.username}</Table.Cell>
+                    <Table.Cell>{user.name}</Table.Cell>
+                    <Table.Cell>{user.email}</Table.Cell>
+                    <Table.Cell>{user.role}</Table.Cell>
                     <Table.Cell collapsing>
                         <Button
                             circular
@@ -23,11 +28,6 @@ function UserTable({ users, userUsernameSearch, handleInputChange, handleDeleteU
                             onClick={() => handleDeleteUser(user.username)}
                         />
                     </Table.Cell>
-                    <Table.Cell>{user.id}</Table.Cell>
-                    <Table.Cell>{user.username}</Table.Cell>
-                    <Table.Cell>{user.name}</Table.Cell>
-                    <Table.Cell>{user.email}</Table.Cell>
-                    <Table.Cell>{user.role}</Table.Cell>
                 </Table.Row>
             )
         })
@@ -47,12 +47,12 @@ function UserTable({ users, userUsernameSearch, handleInputChange, handleDeleteU
             <Table compact striped selectable>
                 <Table.Header>
                     <Table.Row>
-                        <Table.HeaderCell width={1} />
                         <Table.HeaderCell width={1}>ID</Table.HeaderCell>
                         <Table.HeaderCell width={3}>Username</Table.HeaderCell>
                         <Table.HeaderCell width={4}>Name</Table.HeaderCell>
                         <Table.HeaderCell width={5}>Email</Table.HeaderCell>
                         <Table.HeaderCell width={2}>Role</Table.HeaderCell>
+                        <Table.HeaderCell width={1} />
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
