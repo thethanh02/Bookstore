@@ -2,7 +2,6 @@ package com.shopping.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.util.*;
 
 @Data
 @NoArgsConstructor
@@ -22,9 +21,6 @@ public class User {
     private String name;
     private String email;
     private String role;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Order> orders = new ArrayList<>();
 
     public User(String username, String password, String name, String email, String role) {
         this.username = username;

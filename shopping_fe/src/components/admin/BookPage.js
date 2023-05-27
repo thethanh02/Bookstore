@@ -48,7 +48,7 @@ const BookPage = () => {
         const { checked } = e.target
         setViewTable(checked)
     }
-    if (viewTable) {
+    if (!viewTable) {
         let bookList
         if (books.length === 0) {
             bookList = (
