@@ -1,6 +1,7 @@
 package com.shopping.model;
 
 import java.sql.Date;
+import java.util.Collection;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,4 +26,7 @@ public class Book {
 	private Long price;	
 	private String imgUrl;
 	
+	@OneToMany
+	@JoinColumn(name = "book_id")
+	private Collection<BookInCart> booksInCart;
 }

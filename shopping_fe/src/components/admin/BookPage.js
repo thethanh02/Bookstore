@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { Grid, Button, Table, Container, Icon, Image, Checkbox } from 'semantic-ui-react'
 import { storeApi } from '../misc/StoreApi';
-import { handleLogError } from '../misc/Helpers'
+import { handleLogError } from '../utils/Helpers'
 import { formatCurrency } from "../utils/formatCurrency"
 
 const BookPage = () => {
@@ -64,7 +64,7 @@ const BookPage = () => {
                         <Table.Cell>{book.releaseDate}</Table.Cell>
                         <Table.Cell>{book.pageNum}</Table.Cell>
                         <Table.Cell>{book.category}</Table.Cell>
-                        <Table.Cell>{book.imgUrl !== '' && <Image src={book.imgUrl} size="mini" rounded />}</Table.Cell>
+                        <Table.Cell>{book.imgUrl !== '' && <Image src={book.imgUrl} size="tiny" rounded />}</Table.Cell>
                         <Table.Cell collapsing>
                             <Button
                                 circular

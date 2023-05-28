@@ -18,4 +18,5 @@ public class PublicController {
     public Integer getNumberOfUsers() {
         return userService.getUsers().size();
     }
+    
 }

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { config } from '../../Constants'
-import { parseJwt } from './Helpers'
+import { parseJwt } from '../utils/Helpers'
 
 export const storeApi = {
     authenticate,
@@ -51,11 +51,8 @@ function getUserMe(user) {
     })
 }
 
-function getBooks(user) {
-    const url = '/api/books'
-    return instance.get(url, {
-        headers: { 'Authorization': bearerAuth(user) }
-    })
+function getBooks() {
+    return instance.get('/api/books')
 }
 
 function deleteBook(user, bookId) {
@@ -64,11 +61,8 @@ function deleteBook(user, bookId) {
     })
 }
 
-function getBook(user, bookId) {
-    const url = `/api/books/${bookId}`
-    return instance.get(url, {
-        headers: { 'Authorization': bearerAuth(user) }
-    })
+function getBook(bookId) {
+    return instance.get(`/api/books/${bookId}`)
 }
 
 function createBook(user, book) {

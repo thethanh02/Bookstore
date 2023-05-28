@@ -21,6 +21,10 @@ public class User {
     private String name;
     private String email;
     private String role;
+    
+    @OneToOne
+	@JoinColumn(name = "cart_id")
+	private Cart cart;
 
     public User(String username, String password, String name, String email, String role) {
         this.username = username;

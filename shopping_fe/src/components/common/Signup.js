@@ -3,16 +3,19 @@ import { NavLink, Navigate } from 'react-router-dom'
 import { Button, Form, Grid, Segment, Message } from 'semantic-ui-react'
 import AuthContext from '../context/AuthContext'
 import { storeApi } from '../misc/StoreApi'
-import { parseJwt, handleLogError } from '../misc/Helpers'
+import { parseJwt, handleLogError } from '../utils/Helpers'
 
-class Login extends Component {
+class Signup extends Component {
     static contextType = AuthContext
 
     state = {
         username: '',
         password: '',
+        name: '',
+        email: '',
         isLoggedIn: false,
-        isError: false
+        isError: false,
+        errorMessage: ''
     }
 
     componentDidMount() {
@@ -28,13 +31,17 @@ class Login extends Component {
     handleSubmit = (e) => {
         e.preventDefault()
 
-        const { username, password } = this.state
-        if (!(username && password)) {
-            this.setState({ isError: true })
+        const { username, password, name, email } = this.state
+        if (!(username && password && name && email)) {
+            this.setState({
+                isError: true,
+                errorMessage: 'Please, inform all fields!'
+            })
             return
         }
 
-        storeApi.authenticate(username, password)
+        const user = { username, password, name, email }
+        storeApi.signup(user)
             .then(response => {
                 const { accessToken } = response.data
                 const data = parseJwt(accessToken)
@@ -47,19 +54,32 @@ class Login extends Component {
                     username: '',
                     password: '',
                     isLoggedIn: true,
-                    isError: false
+                    isError: false,
+                    errorMessage: ''
                 })
             })
             .catch(error => {
                 handleLogError(error)
-                this.setState({ isError: true })
+                if (error.response && error.response.data) {
+                    const errorData = error.response.data
+                    let errorMessage = 'Invalid fields'
+                    if (errorData.status === 409) {
+                        errorMessage = errorData.message
+                    } else if (errorData.status === 400) {
+                        errorMessage = errorData.errors[0].defaultMessage
+                    }
+                    this.setState({
+                        isError: true,
+                        errorMessage
+                    })
+                }
             })
     }
 
     render() {
-        const { isLoggedIn, isError } = this.state
+        const { isLoggedIn, isError, errorMessage } = this.state
         if (isLoggedIn) {
-            return <Navigate to={'/'} />
+            return <Navigate to='/' />
         } else {
             return (
                 <Grid textAlign='center'>
@@ -84,13 +104,29 @@ class Login extends Component {
                                     type='password'
                                     onChange={this.handleInputChange}
                                 />
-                                <Button color='blue' fluid size='large'>Login</Button>
+                                <Form.Input
+                                    fluid
+                                    name='name'
+                                    icon='address card'
+                                    iconPosition='left'
+                                    placeholder='Name'
+                                    onChange={this.handleInputChange}
+                                />
+                                <Form.Input
+                                    fluid
+                                    name='email'
+                                    icon='at'
+                                    iconPosition='left'
+                                    placeholder='Email'
+                                    onChange={this.handleInputChange}
+                                />
+                                <Button color='red' fluid size='large'>Signup</Button>
                             </Segment>
                         </Form>
-                        <Message>{`Don't have already an account? `}
-                            <a href='/signup' color='blue' as={NavLink} to="/signup">Sign Up</a>
+                        <Message>{`Already have an account? `}
+                            <a href='/login' color='blue' as={NavLink} to="/login">Login</a>
                         </Message>
-                        {isError && <Message negative>The username or password provided are incorrect!</Message>}
+                        {isError && <Message negative>{errorMessage}</Message>}
                     </Grid.Column>
                 </Grid>
             )
@@ -98,4 +134,4 @@ class Login extends Component {
     }
 }
 
-export default Login
+export default Signup

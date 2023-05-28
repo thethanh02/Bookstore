@@ -4,7 +4,7 @@ import { Container } from 'semantic-ui-react'
 import AuthContext from '../context/AuthContext'
 import { storeApi } from '../misc/StoreApi'
 import AdminTab from './AdminTab'
-import { handleLogError } from '../misc/Helpers'
+import { handleLogError } from '../utils/Helpers'
 
 class AdminPage extends Component {
     static contextType = AuthContext

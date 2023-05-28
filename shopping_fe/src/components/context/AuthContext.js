@@ -1,22 +1,20 @@
-import React, { Component, useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 const AuthContext = React.createContext()
 
-class AuthProvider extends Component {
-    state = {
-        user: null
-    }
+const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null)
 
-    componentDidMount() {
+    useEffect(() => {
         const user = localStorage.getItem('user')
-        this.setState({ user })
-    }
+        setUser(user)
+    }, [])
 
-    getUser = () => {
+    const getUser = () => {
         return JSON.parse(localStorage.getItem('user'))
     }
 
-    userIsAuthenticated = () => {
+    const userIsAuthenticated = () => {
         let user = localStorage.getItem('user')
         if (!user) {
             return false
@@ -25,33 +23,27 @@ class AuthProvider extends Component {
 
         // if user has token expired, logout user
         if (Date.now() > user.data.exp * 1000) {
-            this.userLogout()
+            userLogout()
             return false
         }
         return true
     }
 
-    userLogin = user => {
+    const userLogin = user => {
         localStorage.setItem('user', JSON.stringify(user))
-        this.setState({ user })
+        setUser(user)
     }
 
-    userLogout = () => {
+    const userLogout = () => {
         localStorage.removeItem('user')
-        this.setState({ user: null })
+        setUser(null)
     }
 
-    render() {
-        const { children } = this.props
-        const { user } = this.state
-        const { getUser, userIsAuthenticated, userLogin, userLogout } = this
-
-        return (
-            <AuthContext.Provider value={{ user, getUser, userIsAuthenticated, userLogin, userLogout }}>
-                {children}
-            </AuthContext.Provider>
-        )
-    }
+    return (
+        <AuthContext.Provider value={{ user, getUser, userIsAuthenticated, userLogin, userLogout, }}>
+            {children}
+        </AuthContext.Provider>
+    )
 }
 
 export default AuthContext

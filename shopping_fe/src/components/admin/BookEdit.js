@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { storeApi } from '../misc/StoreApi';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { handleLogError } from '../misc/Helpers'
+import { handleLogError } from '../utils/Helpers'
 import { Button, Container, Form, Grid, Header, Image, Label } from 'semantic-ui-react';
 
 function BookEdit() {
