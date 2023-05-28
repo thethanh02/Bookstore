@@ -6,7 +6,6 @@ import { handleLogError } from '../misc/Helpers'
 class Home extends Component {
     state = {
         numberOfUsers: 0,
-        numberOfOrders: 0,
         isLoading: false,
     }
 
@@ -16,10 +15,7 @@ class Home extends Component {
             let response = await storeApi.numberOfUsers()
             const numberOfUsers = response.data
 
-            response = await storeApi.numberOfOrders()
-            const numberOfOrders = response.data
-
-            this.setState({ numberOfUsers, numberOfOrders })
+            this.setState({ numberOfUsers })
         } catch (error) {
             handleLogError(error)
         } finally {
@@ -38,24 +34,16 @@ class Home extends Component {
                 </Segment>
             )
         } else {
-            const { numberOfUsers, numberOfOrders } = this.state
+            const { numberOfUsers } = this.state
             return (
                 <Container text>
-                    <Grid stackable columns={2}>
+                    <Grid stackable columns={1}>
                         <Grid.Row>
                             <Grid.Column textAlign='center'>
-                                <Segment color='teal'>
+                                <Segment color='blue'>
                                     <Statistic>
                                         <Statistic.Value><Icon name='user' color='grey' />{' '}{numberOfUsers}</Statistic.Value>
                                         <Statistic.Label>Users</Statistic.Label>
-                                    </Statistic>
-                                </Segment>
-                            </Grid.Column>
-                            <Grid.Column textAlign='center'>
-                                <Segment color='teal'>
-                                    <Statistic>
-                                        <Statistic.Value><Icon name='box' color='grey' />{' '}{numberOfOrders}</Statistic.Value>
-                                        <Statistic.Label>Orders</Statistic.Label>
                                     </Statistic>
                                 </Segment>
                             </Grid.Column>

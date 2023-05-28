@@ -120,11 +120,11 @@ class Signup extends Component {
                                     placeholder='Email'
                                     onChange={this.handleInputChange}
                                 />
-                                <Button color='teal' fluid size='large'>Signup</Button>
+                                <Button color='blue' fluid size='large'>Signup</Button>
                             </Segment>
                         </Form>
                         <Message>{`Already have an account? `}
-                            <a href='/login' color='teal' as={NavLink} to="/login">Login</a>
+                            <a href='/login' color='blue' as={NavLink} to="/login">Login</a>
                         </Message>
                         {isError && <Message negative>{errorMessage}</Message>}
                     </Grid.Column>

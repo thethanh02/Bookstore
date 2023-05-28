@@ -84,11 +84,11 @@ class Login extends Component {
                                     type='password'
                                     onChange={this.handleInputChange}
                                 />
-                                <Button color='teal' fluid size='large'>Login</Button>
+                                <Button color='blue' fluid size='large'>Login</Button>
                             </Segment>
                         </Form>
                         <Message>{`Don't have already an account? `}
-                            <a href='/signup' color='violet' as={NavLink} to="/signup">Sign Up</a>
+                            <a href='/signup' color='blue' as={NavLink} to="/signup">Sign Up</a>
                         </Message>
                         {isError && <Message negative>The username or password provided are incorrect!</Message>}
                     </Grid.Column>

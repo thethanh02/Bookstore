@@ -9,13 +9,12 @@ import { formatCurrency } from "../utils/formatCurrency"
 
 const BookPage = () => {
     const { getUser } = useAuth()
+    const user = getUser()
     const [isAdmin, setIsAdmin] = useState(true)
     const [books, setBooks] = useState([])
     const [viewTable, setViewTable] = useState(false)
 
     useEffect(() => {
-        const user = getUser()
-
         setIsAdmin(user.data.rol[0] === 'ADMIN')
 
         storeApi.getBooks(user)
@@ -32,8 +31,6 @@ const BookPage = () => {
     }
 
     const handleDeleteBook = (id) => {
-        const user = getUser()
-
         storeApi.deleteBook(user, id)
             .then(() => {
                 let updatedBooks = [...books].filter(i => i.id !== id);
@@ -63,7 +60,7 @@ const BookPage = () => {
                         <Table.Cell>{book.id}</Table.Cell>
                         <Table.Cell>{book.title}</Table.Cell>
                         <Table.Cell>{book.author}</Table.Cell>
-                        <Table.Cell>{book.description.length > 100 ? book.description.substr(0,100) + '...' : book.description}</Table.Cell>
+                        <Table.Cell>{book.description.length > 100 ? book.description.substr(0, 100) + '...' : book.description}</Table.Cell>
                         <Table.Cell>{book.releaseDate}</Table.Cell>
                         <Table.Cell>{book.pageNum}</Table.Cell>
                         <Table.Cell>{book.category}</Table.Cell>

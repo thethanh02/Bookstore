@@ -6,12 +6,8 @@ export const storeApi = {
     authenticate,
     signup,
     numberOfUsers,
-    numberOfOrders,
     getUsers,
     deleteUser,
-    getOrders,
-    deleteOrder,
-    createOrder,
     getUserMe,
     getBooks,
     deleteBook,
@@ -36,10 +32,6 @@ function numberOfUsers() {
     return instance.get('/public/numberOfUsers')
 }
 
-function numberOfOrders() {
-    return instance.get('/public/numberOfOrders')
-}
-
 function getUsers(user, username) {
     const url = username ? `/api/users/${username}` : '/api/users'
     return instance.get(url, {
@@ -50,28 +42,6 @@ function getUsers(user, username) {
 function deleteUser(user, username) {
     return instance.delete(`/api/users/${username}`, {
         headers: { 'Authorization': bearerAuth(user) }
-    })
-}
-
-function getOrders(user, text) {
-    const url = text ? `/api/orders?text=${text}` : '/api/orders'
-    return instance.get(url, {
-        headers: { 'Authorization': bearerAuth(user) }
-    })
-}
-
-function deleteOrder(user, orderId) {
-    return instance.delete(`/api/orders/${orderId}`, {
-        headers: { 'Authorization': bearerAuth(user) }
-    })
-}
-
-function createOrder(user, order) {
-    return instance.post('/api/orders', order, {
-        headers: {
-            'Content-type': 'application/json',
-            'Authorization': bearerAuth(user)
-        }
     })
 }
 

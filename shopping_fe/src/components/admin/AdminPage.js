@@ -11,14 +11,10 @@ class AdminPage extends Component {
 
     state = {
         users: [],
-        orders: [],
         books: [],
-        orderDescription: '',
-        orderTextSearch: '',
         userUsernameSearch: '',
         isAdmin: true,
         isUsersLoading: false,
-        isOrdersLoading: false,
         isBooksLoading: false
     }
 
@@ -29,7 +25,6 @@ class AdminPage extends Component {
         this.setState({ isAdmin })
 
         this.handleGetUsers()
-        this.handleGetOrders()
         this.handleGetBooks()
     }
 
@@ -84,73 +79,6 @@ class AdminPage extends Component {
             })
     }
 
-    handleGetOrders = () => {
-        const Auth = this.context
-        const user = Auth.getUser()
-
-        this.setState({ isOrdersLoading: true })
-        storeApi.getOrders(user)
-            .then(response => {
-                this.setState({ orders: response.data })
-            })
-            .catch(error => {
-                handleLogError(error)
-            })
-            .finally(() => {
-                this.setState({ isOrdersLoading: false })
-            })
-    }
-
-    handleDeleteOrder = (isbn) => {
-        const Auth = this.context
-        const user = Auth.getUser()
-
-        storeApi.deleteOrder(user, isbn)
-            .then(() => {
-                this.handleGetOrders()
-            })
-            .catch(error => {
-                handleLogError(error)
-            })
-    }
-
-    handleCreateOrder = () => {
-        const Auth = this.context
-        const user = Auth.getUser()
-
-        let { orderDescription } = this.state
-        orderDescription = orderDescription.trim()
-        if (!orderDescription) {
-            return
-        }
-
-        const order = { description: orderDescription }
-        storeApi.createOrder(user, order)
-            .then(() => {
-                this.handleGetOrders()
-                this.setState({ orderDescription: '' })
-            })
-            .catch(error => {
-                handleLogError(error)
-            })
-    }
-
-    handleSearchOrder = () => {
-        const Auth = this.context
-        const user = Auth.getUser()
-
-        const text = this.state.orderTextSearch
-        storeApi.getOrders(user, text)
-            .then(response => {
-                const orders = response.data
-                this.setState({ orders })
-            })
-            .catch(error => {
-                handleLogError(error)
-                this.setState({ orders: [] })
-            })
-    }
-
     handleGetBooks = () => {
         const Auth = this.context
         const user = Auth.getUser()
@@ -185,7 +113,7 @@ class AdminPage extends Component {
         if (!this.state.isAdmin) {
             return <Navigate to='/' />
         } else {
-            const { isUsersLoading, users, userUsernameSearch, isOrdersLoading, orders, orderDescription, orderTextSearch, books, isBooksLoading } = this.state
+            const { isUsersLoading, users, userUsernameSearch, books, isBooksLoading } = this.state
             return (
                 <Container>
                     <AdminTab
@@ -194,13 +122,6 @@ class AdminPage extends Component {
                         userUsernameSearch={userUsernameSearch}
                         handleDeleteUser={this.handleDeleteUser}
                         handleSearchUser={this.handleSearchUser}
-                        isOrdersLoading={isOrdersLoading}
-                        orders={orders}
-                        orderDescription={orderDescription}
-                        orderTextSearch={orderTextSearch}
-                        handleCreateOrder={this.handleCreateOrder}
-                        handleDeleteOrder={this.handleDeleteOrder}
-                        handleSearchOrder={this.handleSearchOrder}
                         handleInputChange={this.handleInputChange}
                         books={books}
                         handleDeleteBook={this.handleDeleteBook}

@@ -120,7 +120,12 @@ function BookEdit() {
                                         onChange={e => onChangeImage(e)}
                                     />
                                 </Label>
-                                {book.imgUrl.startsWith('/imgs/') ? <Image src={book.imgUrl} size="small" rounded /> : <Image src={`data:image/jpeg;base64,${book.imgUrl}`} size="small" rounded /> }
+                                {book.imgUrl !== '' &&
+                                    (book.imgUrl.startsWith('/imgs/') ? 
+                                        <Image src={book.imgUrl} size="small" rounded /> : 
+                                        <Image src={`data:image/jpeg;base64,${book.imgUrl}`} size="small" rounded /> 
+                                    )
+                                }
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
