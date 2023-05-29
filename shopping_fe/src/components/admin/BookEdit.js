@@ -5,7 +5,7 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { handleLogError } from '../utils/Helpers'
 import { Button, Container, Form, Grid, Header, Image, Label } from 'semantic-ui-react';
 
-function BookEdit() {
+const BookEdit = () => {
     const { getUser } = useAuth()
     const user = getUser()
     const [isAdmin, setIsAdmin] = useState(true)
@@ -23,23 +23,29 @@ function BookEdit() {
     };
 
     const [book, setBook] = useState(initialFormState);
+    const [viewMode, setViewMode] = useState(true);
     const navigate = useNavigate();
     const { id } = useParams();
-
+    const categoryOptions = [
+        { key: 'Lịch sử', value: 'Lịch sử', text: 'Lịch sử' },
+        { key: 'Khoa học', value: 'Khoa học', text: 'Khoa học' },
+        { key: 'Văn học Việt Nam', value: 'Văn học Việt Nam', text: 'Văn học Việt Nam' },
+    ]
     useEffect(() => {
         setIsAdmin(user.data.rol[0] === 'ADMIN')
         if (id !== 'new') {
-            storeApi.getBook(user, id)
+            storeApi.getBook(id)
                 .then(response => {
                     setBook(response.data)
                 })
                 .catch(error => {
                     handleLogError(error)
                 })
+        } else {
+            setViewMode(false)
         }
-       
     }, [])
-    
+
     if (!isAdmin) {
         return <Navigate to='/' />
     }
@@ -49,10 +55,10 @@ function BookEdit() {
 
         setBook({ ...book, [name]: type === 'checkbox' ? checked : value })
     }
-    
+
     const onChangeImage = (e) => {
         const file = e.target.files[0];
-        
+
         if (file) {
             const reader = new FileReader();
             reader.onload = handleReaderLoaded;
@@ -67,7 +73,7 @@ function BookEdit() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        
+
         if (book.id) {
             storeApi.updateBook(user, book.id, book)
         } else {
@@ -75,7 +81,7 @@ function BookEdit() {
         }
         navigate('/books');
     }
-    
+
     return (
         <div>
             <Container>
@@ -85,17 +91,27 @@ function BookEdit() {
                         <Grid.Row>
                             <Grid.Column width={8}>
                                 <Form.Group widths='equal'>
-                                    <Form.Input fluid className='required' label='Title' name='title' placeholder='Title' value={book.title} onChange={handleChange} />
-                                    <Form.Input fluid className='required' label='Author' name='author' placeholder='Author' value={book.author} onChange={handleChange} />
+                                    <Form.Input fluid className='required' label='Title' name='title' placeholder='Title' value={book.title} onChange={handleChange} disabled={viewMode} />
+                                    <Form.Input fluid className='required' label='Author' name='author' placeholder='Author' value={book.author} onChange={handleChange} disabled={viewMode} />
                                 </Form.Group>
-                                <Form.TextArea label='Description' name='description' placeholder="Description" value={book.description} onChange={handleChange} />
+                                <Form.TextArea label='Description' name='description' placeholder="Description" value={book.description} onChange={handleChange} disabled={viewMode} />
                                 <Form.Group widths='equal'>
-                                    <Form.Input fluid className='required' label='Release Date' name='releaseDate' type='date' value={book.releaseDate} onChange={handleChange} />
-                                    <Form.Input fluid label='Page Number' name='pageNum' type='number' value={book.pageNum} onChange={handleChange} />
+                                    <Form.Input fluid className='required' label='Release Date' name='releaseDate' type='date' value={book.releaseDate} onChange={handleChange} disabled={viewMode} />
+                                    <Form.Input fluid label='Page Number' name='pageNum' type='number' value={book.pageNum} onChange={handleChange} disabled={viewMode} />
                                 </Form.Group>
                                 <Form.Group widths='equal'>
-                                    <Form.Input fluid label='Category' name='category' placeholder='Category' value={book.category} onChange={handleChange} />
-                                    <Form.Input fluid label='Price' labelPosition='right' name='price' type='number' value={book.price} onChange={handleChange}>
+                                    <Form.Select
+                                        fluid
+                                        label='Category'
+                                        options={categoryOptions}
+                                        placeholder='Thể loại'
+                                        value={book.category}
+                                        defaultValue={book.category}
+                                        onChange={handleChange}
+                                        disabled={viewMode}
+                                    />
+                                    {/* <Form.Input fluid label='Category' name='category' placeholder='Category' value={book.category} onChange={handleChange} /> */}
+                                    <Form.Input fluid label='Price' labelPosition='right' name='price' type='number' value={book.price} onChange={handleChange} disabled={viewMode} >
                                         <input />
                                         <Label>VNĐ</Label>
                                     </Form.Input>
@@ -118,12 +134,13 @@ function BookEdit() {
                                         id="upload"
                                         accept="image/*"
                                         onChange={e => onChangeImage(e)}
+                                        disabled={viewMode}
                                     />
                                 </Label>
                                 {book.imgUrl !== '' &&
-                                    (book.imgUrl.startsWith('/imgs/') ? 
-                                        <Image src={book.imgUrl} size="small" rounded /> : 
-                                        <Image src={`data:image/jpeg;base64,${book.imgUrl}`} size="small" rounded /> 
+                                    (book.imgUrl.startsWith('/imgs/') ?
+                                        <Image src={book.imgUrl} size="small" rounded /> :
+                                        <Image src={`data:image/jpeg;base64,${book.imgUrl}`} size="small" rounded />
                                     )
                                 }
                             </Grid.Column>
@@ -131,7 +148,10 @@ function BookEdit() {
                         <Grid.Row>
                             <Grid.Column width={8} />
                             <Grid.Column width={6}>
-                                <Form.Button primary type='submit' floated='right'>{book.id ? 'Save' : 'Add'}</Form.Button>
+                                {viewMode ?
+                                    <Form.Button primary type='button' floated='right' onClick={(e) => { e.preventDefault(); setViewMode(false); }}>Edit</Form.Button> :
+                                    <Form.Button primary type='submit' floated='right'>{book.id ? 'Save' : 'Add'}</Form.Button>
+                                }
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>

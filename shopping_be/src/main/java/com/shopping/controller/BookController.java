@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,14 @@ public class BookController {
     BookDto deleteBooks(@PathVariable String id) {
         Book book = bookService.validateAndGetBookById(id.toString());
         bookService.deleteBook(book);
+        
+        String filePath = "../shopping_fe/public" + book.getImgUrl();
+        Path path = Paths.get(filePath);
+        try {
+            Files.delete(path);
+        } catch (Exception e) {
+            System.err.println("Không thể xóa file: " + e.getMessage());
+        }
         return bookMapper.toBookDto(book);
     }
     
@@ -54,15 +63,14 @@ public class BookController {
     	String imgBase64 = book.getImgUrl();
     	if (Base64Detect.isBase64(imgBase64)) {
             byte[] decodedBytes = Base64.getDecoder().decode(imgBase64);
-            String outputFilePath = "../shopping_fe/public/imgs/book" + book.getId() + ".jpg";
             try {
+            	String randomName = UUID.randomUUID().toString();
+            	String outputFilePath = "../shopping_fe/public/imgs/book" + randomName + ".jpg";
             	Path outputPath = Paths.get(outputFilePath);
 				Files.write(outputPath, decodedBytes);
 				
-				String imgUrlString = "/imgs/book" + book.getId() + ".jpg";
+				String imgUrlString = "/imgs/book" + randomName + ".jpg";
 				book.setImgUrl(imgUrlString);
-				
-				System.out.println("Tệp ảnh đã được lưu thành công.");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -70,24 +78,22 @@ public class BookController {
     	}
     	
     	Book result = bookService.saveBook(book);
-    	return ResponseEntity.created(new URI("/api/laptops/" + result.getId()))
+    	return ResponseEntity.created(new URI("/api/books/" + result.getId()))
                 .body(result);
     }
     
     @PutMapping("/{id}")
     ResponseEntity<Book> updateBook(@Valid @RequestBody Book book) throws URISyntaxException {
     	String imgBase64 = book.getImgUrl();
+    	String imgUrlString = bookService.validateAndGetBookById(book.getId().toString()).getImgUrl();
     	if (Base64Detect.isBase64(imgBase64)) {
             byte[] decodedBytes = Base64.getDecoder().decode(imgBase64);
-            String outputFilePath = "../shopping_fe/public/imgs/book" + book.getId() + ".jpg";
+            String outputFilePath = "../shopping_fe/public" + imgUrlString;
             try {
             	Path outputPath = Paths.get(outputFilePath);
 				Files.write(outputPath, decodedBytes);
 				
-				String imgUrlString = "/imgs/book" + book.getId() + ".jpg";
 				book.setImgUrl(imgUrlString);
-				
-				System.out.println("Tệp ảnh đã được lưu thành công.");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

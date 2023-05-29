@@ -107,7 +107,7 @@ class Signup extends Component {
                                 <Form.Input
                                     fluid
                                     name='name'
-                                    icon='address card'
+                                    icon='info circle'
                                     iconPosition='left'
                                     placeholder='Name'
                                     onChange={this.handleInputChange}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Navigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import { Grid, Button, Table, Container, Icon, Image, Checkbox } from 'semantic-ui-react'
+import { Grid, Button, Table, Container, Icon, Image, Checkbox, Confirm } from 'semantic-ui-react'
 import { storeApi } from '../misc/StoreApi';
 import { handleLogError } from '../utils/Helpers'
 import { formatCurrency } from "../utils/formatCurrency"
@@ -13,11 +13,13 @@ const BookPage = () => {
     const [isAdmin, setIsAdmin] = useState(true)
     const [books, setBooks] = useState([])
     const [viewTable, setViewTable] = useState(false)
+    const [confirmOpen, setConfirmOpen] = useState(false)
+    const [deleteItemId, setDeleteItemId] = useState(null);
 
     useEffect(() => {
         setIsAdmin(user.data.rol[0] === 'ADMIN')
 
-        storeApi.getBooks(user)
+        storeApi.getBooks()
             .then(response => {
                 setBooks(response.data)
             })
@@ -30,15 +32,22 @@ const BookPage = () => {
         return <Navigate to='/' />
     }
 
-    const handleDeleteBook = (id) => {
-        storeApi.deleteBook(user, id)
+    const handleOpenConfirm = (itemId) => {
+        setConfirmOpen(true);
+        setDeleteItemId(itemId);
+    };
+
+    const handleDeleteBook = () => {
+        storeApi.deleteBook(user, deleteItemId)
             .then(() => {
-                let updatedBooks = [...books].filter(i => i.id !== id);
+                let updatedBooks = [...books].filter(i => i.id !== deleteItemId);
                 setBooks(updatedBooks);
             })
             .catch(error => {
                 handleLogError(error)
             })
+        setConfirmOpen(false)
+        setDeleteItemId(null)
     }
 
     const onChangeViewTable = (e) => {
@@ -79,7 +88,7 @@ const BookPage = () => {
                                 color='red'
                                 size='small'
                                 icon='trash'
-                                onClick={() => handleDeleteBook(book.id)}
+                                onClick={() => handleOpenConfirm(book.id)}
                             />
                         </Table.Cell>
                     </Table.Row>
@@ -111,9 +120,9 @@ const BookPage = () => {
                             <Table.HeaderCell width={2}>Author</Table.HeaderCell>
                             <Table.HeaderCell width={4}>Description</Table.HeaderCell>
                             <Table.HeaderCell width={2}>Release Date</Table.HeaderCell>
-                            <Table.HeaderCell width={1}>Page Number</Table.HeaderCell>
-                            <Table.HeaderCell width={2}>Category</Table.HeaderCell>
-                            <Table.HeaderCell width={2}>Image</Table.HeaderCell>
+                            <Table.HeaderCell width={1}>Page</Table.HeaderCell>
+                            <Table.HeaderCell width={1}>Category</Table.HeaderCell>
+                            <Table.HeaderCell width={1}>Image</Table.HeaderCell>
                             <Table.HeaderCell width={1} />
                         </Table.Row>
                     </Table.Header>
@@ -121,6 +130,17 @@ const BookPage = () => {
                         {bookList}
                     </Table.Body>
                 </Table>
+                <Confirm
+                    open={confirmOpen}
+                    header='Xác nhận'
+                    content='Bạn có chắc muốn xóa không?'
+                    cancelButton='No'
+                    confirmButton='Yes'
+                    onCancel={() => { setConfirmOpen(false); setDeleteItemId(null) }}
+                    onConfirm={handleDeleteBook}
+                    size='mini'
+                    style={{ 'height': '190px', 'position': 'fixed', 'top': '50%', 'left': '50%', 'transform': 'translate(-50%, -50%)' }}
+                />
             </Container>
         )
     } else {
@@ -155,7 +175,7 @@ const BookPage = () => {
                                     color='red'
                                     size='small'
                                     icon='trash'
-                                    onClick={() => handleDeleteBook(book.id)}
+                                    onClick={() => handleOpenConfirm(book.id)}
                                 />
                             </Table.Cell>
                         </Table.Row>
@@ -188,14 +208,14 @@ const BookPage = () => {
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
-                <Table compact color='teal'>
+                <Table compact>
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell rowSpan='3' width={1}>ID</Table.HeaderCell>
                             <Table.HeaderCell rowSpan='3' width={1}>Book cover</Table.HeaderCell>
-                            <Table.HeaderCell width={1}>Title</Table.HeaderCell>
+                            <Table.HeaderCell width={2}>Title</Table.HeaderCell>
                             <Table.HeaderCell rowSpan='3' width={4}>Description</Table.HeaderCell>
-                            <Table.HeaderCell width={2}>Release Date</Table.HeaderCell>
+                            <Table.HeaderCell width={1}>Release Date</Table.HeaderCell>
                             <Table.HeaderCell rowSpan='3' width={1} />
                         </Table.Row>
                         <Table.Row>
@@ -209,6 +229,17 @@ const BookPage = () => {
                     </Table.Header>
                     {bookList}
                 </Table>
+                <Confirm
+                    open={confirmOpen}
+                    header='Xác nhận'
+                    content='Bạn có chắc muốn xóa không?'
+                    cancelButton='No'
+                    confirmButton='Yes'
+                    onCancel={() => { setConfirmOpen(false); setDeleteItemId(null) }}
+                    onConfirm={handleDeleteBook}
+                    size='mini'
+                    style={{ 'height': '190px', 'position': 'fixed', 'top': '50%', 'left': '50%', 'transform': 'translate(-50%, -50%)' }}
+                />
             </Container>
         )
     }

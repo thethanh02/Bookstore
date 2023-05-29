@@ -5,13 +5,12 @@ import { StoreItem } from "./StoreItem"
 import { handleLogError } from '../utils/Helpers'
 
 const Store = () => {
-    const [books, setBooks] = useState([])
+    const [storeItems, setStoreItems] = useState([])
 
     useEffect(() => {
         storeApi.getBooks()
             .then(response => {
-                setBooks(response.data)
-                console.log(books)
+                setStoreItems(response.data)
             })
             .catch(error => {
                 handleLogError(error)
@@ -21,7 +20,7 @@ const Store = () => {
     return (
         <Container>
             <Grid doubling columns={5}>
-                {books.map(item => (
+                {storeItems.map(item => (
                     <StoreItem {...item} />
                 ))}
             </Grid>

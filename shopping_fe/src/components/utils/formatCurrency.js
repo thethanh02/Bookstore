@@ -7,6 +7,6 @@ const CURRENCY_FORMATTER = new Intl.NumberFormat("vi-VI", {
  * @param {number} number - The number to be formatted.
  * @returns {string} The formatted currency string.
  */
-export function formatCurrency(number) {
+export const formatCurrency = (number) => {
     return CURRENCY_FORMATTER.format(number)
 }
