@@ -29,7 +29,7 @@ export function CartItem({ id, quantity }) {
                 <div>
                     {item.title} {" "}
                     {quantity > 1 && 
-                        <span className="text-muted" style={{ fontSize: ".65rem"}}>
+                        <span className="text-muted" style={{ fontSize: ".68rem"}}>
                             x{quantity}
                         </span>
                     }

@@ -1,7 +1,10 @@
 package com.shopping.mapper;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
+import com.shopping.model.Comment;
 import com.shopping.model.User;
 import com.shopping.controller.payload.UserDto;
 
@@ -13,7 +16,15 @@ public class UserMapperImpl implements UserMapper {
         if (user == null) {
             return null;
         }
-        return new UserDto(user.getId(), user.getUsername(), user.getName(), user.getEmail(), user.getRole());
+        List<UserDto.CommentDto> comments = user.getComments().stream().map(this::toUserDtoCommentDto).toList();
+        return new UserDto(user.getId(), user.getUsername(), user.getName(), user.getEmail(), user.getRole(), comments);
+    }
+    
+    private UserDto.CommentDto toUserDtoCommentDto(Comment comment) {
+        if (comment == null) {
+            return null;
+        }
+        return new UserDto.CommentDto(comment.getId(), comment.getCommentString(), comment.getCreatedAt());
     }
     
 }

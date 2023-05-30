@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.shopping.Base64Detect;
 import com.shopping.controller.payload.BookDto;
 import com.shopping.mapper.BookMapper;
 import com.shopping.model.Book;
 import com.shopping.service.BookService;
+import com.shopping.utils.Base64Detect;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -83,7 +83,7 @@ public class BookController {
     }
     
     @PutMapping("/{id}")
-    ResponseEntity<Book> updateBook(@Valid @RequestBody Book book) throws URISyntaxException {
+    ResponseEntity<Book> updateBook(@Valid @RequestBody Book book) {
     	String imgBase64 = book.getImgUrl();
     	String imgUrlString = bookService.validateAndGetBookById(book.getId().toString()).getImgUrl();
     	if (Base64Detect.isBase64(imgBase64)) {

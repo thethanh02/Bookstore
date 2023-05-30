@@ -5,6 +5,6 @@ import com.shopping.model.Book;
 
 public interface BookMapper {
 	
-    BookDto toBookDto(Book book);
+    BookDto toBookDto(Book book);    
     
 }

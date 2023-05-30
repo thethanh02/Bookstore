@@ -5,8 +5,13 @@ import { handleLogError } from '../utils/Helpers'
 import { Button, Comment, Container, Form, Grid, Header, Icon, Image, List, Rating, Segment, Tab } from 'semantic-ui-react';
 import { formatCurrency } from './../utils/formatCurrency';
 import { useShoppingCart } from "../context/ShoppingCartContext"
+import moment from 'moment';
+import { useAuth } from '../context/AuthContext';
 
 const ItemDetail = () => {
+    const { getUser } = useAuth()
+    const user = getUser()
+
     const initialFormState = {
         id: '',
         title: '',
@@ -16,25 +21,66 @@ const ItemDetail = () => {
         pageNum: 0,
         category: '',
         price: 0,
-        imgUrl: ''
+        imgUrl: '',
+        comments: null
     };
 
     const [book, setBook] = useState(initialFormState);
     const { id } = useParams();
     const [amount, setAmount] = useState(1);
+    const { setItemQuantity } = useShoppingCart();
+    const [commentsVar, setCommentsVar] = useState(null);
+    const [commentString1, setCommentString1] = useState('');
 
     useEffect(() => {
         storeApi.getBook(id)
             .then(response => {
                 setBook(response.data)
+                setCommentsVar(response.data.comments)
             })
             .catch(error => {
                 handleLogError(error)
             })
-
     }, [])
 
-    const { setItemQuantity } = useShoppingCart()
+    const handleCreateComment = () => {
+        let commentString2 = commentString1.trim()
+        if (!commentString2) {
+            return
+        }
+
+        const commentReq = { commentString: commentString2 }
+        console.log(commentReq)
+        console.log(book)
+        storeApi.createComment(user, commentReq, book.id)
+            .then(() => {
+                setCommentString1('')
+            })
+            .catch(error => {
+                handleLogError(error)
+            })
+    }
+
+    let commentList
+    if (commentsVar === null) {
+        commentList = (<></>)
+    } else {
+        commentList = commentsVar.map(comment => {
+            return (
+                <Comment>
+                    <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
+                    <Comment.Content>
+                        <Comment.Author as='a'>{comment.user.username}</Comment.Author>
+                        <Comment.Metadata>
+                            <div>{moment(comment.createdAt).format('HH:mm:ss DD/MM/YYYY')}</div>
+                        </Comment.Metadata>
+                        <Comment.Text>{comment.commentString}</Comment.Text>
+                    </Comment.Content>
+                </Comment>
+
+            )
+        })
+    }
 
     const panes = [
         { menuItem: 'Mô tả', render: () => <Tab.Pane>{book.description}</Tab.Pane> },
@@ -43,30 +89,9 @@ const ItemDetail = () => {
             render: () =>
                 <Tab.Pane>
                     <Comment.Group>
-                        <Comment>
-                            <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
-                            <Comment.Content>
-                                <Comment.Author as='a'>Matt</Comment.Author>
-                                <Comment.Metadata>
-                                    <div>Today at 5:42PM</div>
-                                </Comment.Metadata>
-                                <Comment.Text>Tuyệt vời!</Comment.Text>
-                            </Comment.Content>
-                        </Comment>
-
-                        <Comment>
-                            <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/joe.jpg' />
-                            <Comment.Content>
-                                <Comment.Author as='a'>Joe Henderson</Comment.Author>
-                                <Comment.Metadata>
-                                    <div>5 days ago</div>
-                                </Comment.Metadata>
-                                <Comment.Text>Tuyệt vờii!</Comment.Text>
-                            </Comment.Content>
-                        </Comment>
-
-                        <Form reply>
-                            <Form.TextArea />
+                        {commentList}
+                        <Form reply onSubmit={handleCreateComment}>
+                            <Form.TextArea name='commentString' style={{ 'height': '100%', 'width': '75%' }} value={commentString1} onChange={(e) => { setCommentString1(e.target.value) }}  />
                             <Button content='Thêm bình luận' labelPosition='left' icon='edit' primary />
                         </Form>
                     </Comment.Group>
@@ -103,7 +128,7 @@ const ItemDetail = () => {
                                             <List.Item>{'Tác giả: ' + book.author}</List.Item>
                                             <List.Item>{'Thể loại: ' + book.category}</List.Item>
                                             <List.Item>{'Số trang: ' + book.pageNum}</List.Item>
-                                            <List.Item>{'Ngày phát hành: ' + book.releaseDate}</List.Item>
+                                            <List.Item>{'Ngày phát hành: ' + moment(book.releaseDate).format('DD/MM/YYYY')}</List.Item>
                                         </List>
                                     </Grid.Column>
                                     <Grid.Column width={9}>

@@ -1,12 +1,13 @@
 package com.shopping.model;
 
+import java.util.*;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "users", uniqueConstraints = {
+@Table(name = "user", uniqueConstraints = {
         @UniqueConstraint(columnNames = "username"),
         @UniqueConstraint(columnNames = "email")
 })
@@ -22,10 +23,13 @@ public class User {
     private String email;
     private String role;
     
-    @OneToOne
-	@JoinColumn(name = "cart_id")
-	private Cart cart;
-
+//    @OneToOne
+//	@JoinColumn(name = "cart_id")
+//	private Cart cart;
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+    
     public User(String username, String password, String name, String email, String role) {
         this.username = username;
         this.password = password;
@@ -33,4 +37,11 @@ public class User {
         this.email = email;
         this.role = role;
     }
+    
+    public void addComment(Comment comment) {
+    	if (this.comments == null)
+    		this.comments = new ArrayList<>();
+    	this.comments.add(comment);
+    }
+    
 }

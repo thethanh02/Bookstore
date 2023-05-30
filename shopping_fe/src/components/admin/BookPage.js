@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom'
 import { Grid, Button, Table, Container, Icon, Image, Checkbox, Confirm } from 'semantic-ui-react'
 import { storeApi } from '../misc/StoreApi';
 import { handleLogError } from '../utils/Helpers'
-import { formatCurrency } from "../utils/formatCurrency"
+import { formatCurrency } from '../utils/formatCurrency'
+import moment from 'moment';
 
 const BookPage = () => {
     const { getUser } = useAuth()
@@ -70,7 +71,7 @@ const BookPage = () => {
                         <Table.Cell>{book.title}</Table.Cell>
                         <Table.Cell>{book.author}</Table.Cell>
                         <Table.Cell>{book.description.length > 100 ? book.description.substr(0, 100) + '...' : book.description}</Table.Cell>
-                        <Table.Cell>{book.releaseDate}</Table.Cell>
+                        <Table.Cell>{moment(book.releaseDate).format('DD/MM/YYYY')}</Table.Cell>
                         <Table.Cell>{book.pageNum}</Table.Cell>
                         <Table.Cell>{book.category}</Table.Cell>
                         <Table.Cell>{book.imgUrl !== '' && <Image src={book.imgUrl} size="tiny" rounded />}</Table.Cell>

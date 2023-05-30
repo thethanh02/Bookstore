@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/api/books/**").hasAuthority(ADMIN)
                 .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasAuthority(ADMIN)
                 .requestMatchers(HttpMethod.GET, "/api/books", "/api/books/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/comments/new").hasAnyAuthority(ADMIN, USER)
                 .requestMatchers("/public/**", "/auth/**").permitAll()
                 .requestMatchers("/", "/error", "/csrf").permitAll()
                 .anyRequest().authenticated()

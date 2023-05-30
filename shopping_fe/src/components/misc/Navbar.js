@@ -41,7 +41,7 @@ const Navbar = () => {
     const { openCart, cartQuantity } = useShoppingCart()
 
     return (
-        <Menu pointing secondary size="massive" color="red">
+        <Menu pointing secondary size="massive" color="red" style={{ 'backgroundColor': 'white' }}>
             <Container>
                 <Menu.Item header as={Link} exact='true' to="/" name='Home' active={activeItem === 'Home'} onClick={handleItemClick}>
                     <img
@@ -69,6 +69,7 @@ const Navbar = () => {
                                     bottom: 0,
                                     right: 0,
                                     transform: "translate(25%, 25%)",
+                                    fontSize: "0.8rem"
                                 }}
                             >
                                 {cartQuantity}    

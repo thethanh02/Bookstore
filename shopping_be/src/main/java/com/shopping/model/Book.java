@@ -1,7 +1,7 @@
 package com.shopping.model;
 
 import java.sql.Date;
-import java.util.Collection;
+import java.util.*;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "books")
+@Table(name = "book")
 public class Book {
 	
 	@Id
@@ -26,7 +26,16 @@ public class Book {
 	private Long price;	
 	private String imgUrl;
 	
-	@OneToMany
-	@JoinColumn(name = "book_id")
-	private Collection<BookInCart> booksInCart;
+//	@OneToMany(mappedBy = "books", cascade = CascadeType.ALL)
+//	private Collection<BookInCart> booksInCart;
+	
+	@OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+	
+	public void addComment(Comment comment) {
+    	if (this.comments == null)
+    		this.comments = new ArrayList<>();
+    	this.comments.add(comment);
+    }
+	
 }

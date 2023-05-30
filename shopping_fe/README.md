@@ -4,7 +4,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Before start
 
-`yarn add react-cookie react-router-dom axios bootstrap react-bootstrap semantic-ui-react semantic-ui-css`
+`yarn add react-cookie react-router-dom axios bootstrap react-bootstrap semantic-ui-react semantic-ui-css moment`
 
 ```
 import 'bootstrap/dist/css/bootstrap.min.css'

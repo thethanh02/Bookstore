@@ -13,7 +13,8 @@ export const storeApi = {
     deleteBook,
     getBook,
     createBook,
-    updateBook
+    updateBook,
+    createComment
 }
 
 function authenticate(username, password) {
@@ -75,6 +76,13 @@ function createBook(user, book) {
 function updateBook(user, bookId, book) {
     const url = `/api/books/${bookId}`
     return instance.put(url, book, {
+        headers: { 'Authorization': bearerAuth(user) }
+    })
+}
+
+function createComment(user, comment, bookId) {
+    const url = `/api/comments/new/${bookId}`
+    return instance.post(url, comment, {
         headers: { 'Authorization': bearerAuth(user) }
     })
 }

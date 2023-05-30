@@ -1,6 +1,7 @@
 import { Card, Grid, Image, Rating } from "semantic-ui-react";
 import { formatCurrency } from "../utils/formatCurrency"
 import { Link } from "react-router-dom";
+import moment from 'moment';
 
 export function StoreItem(book) {
 
@@ -12,7 +13,7 @@ export function StoreItem(book) {
                     <Card.Header>{book.title.length > 35 ? book.title.substr(0, 35) + '...' : book.title}</Card.Header>
                     <Card.Meta>
                         <span><Rating icon='star' defaultRating={3} maxRating={5} disabled /></span>
-                        <span className='date' style={{ float: 'right' }}>{book.releaseDate}</span>
+                        <span style={{ float: 'right' }}>{moment(book.releaseDate).format('DD/MM/YYYY')}</span>
                     </Card.Meta>
                     <Card.Meta>
                         <span style={{ color: 'red' }}>{formatCurrency(book.price)}</span>
