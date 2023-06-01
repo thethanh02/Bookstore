@@ -23,25 +23,19 @@ public class User {
     private String email;
     private String role;
     
-//    @OneToOne
-//	@JoinColumn(name = "cart_id")
-//	private Cart cart;
-    
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
+    private List<Review> comments = new ArrayList<>();
     
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @PrimaryKeyJoinColumn
+	private Cart cart;
+
     public User(String username, String password, String name, String email, String role) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.email = email;
         this.role = role;
-    }
-    
-    public void addComment(Comment comment) {
-    	if (this.comments == null)
-    		this.comments = new ArrayList<>();
-    	this.comments.add(comment);
     }
     
 }

@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { storeApi } from '../misc/StoreApi';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { handleLogError } from '../utils/Helpers'
 import { Button, Comment, Container, Form, Grid, Header, Icon, Image, List, Rating, Segment, Tab } from 'semantic-ui-react';
 import { formatCurrency } from './../utils/formatCurrency';
 import { useShoppingCart } from "../context/ShoppingCartContext"
 import moment from 'moment';
 import { useAuth } from '../context/AuthContext';
+import ItemReview from './ItemReview';
 
 const ItemDetail = () => {
-    const { getUser } = useAuth()
+    const { getUser, userIsAuthenticated } = useAuth()
     const user = getUser()
 
     const initialFormState = {
@@ -22,37 +23,53 @@ const ItemDetail = () => {
         category: '',
         price: 0,
         imgUrl: '',
-        comments: null
+        reviews: null
     };
 
     const [book, setBook] = useState(initialFormState);
     const { id } = useParams();
     const [amount, setAmount] = useState(1);
     const { setItemQuantity } = useShoppingCart();
-    const [commentsVar, setCommentsVar] = useState(null);
+    const [reviewsVal, setReviewsVal] = useState(null);
     const [commentString1, setCommentString1] = useState('');
+    const [ratingValue, setRatingValue] = useState(0);
+    const [currRating, setCurrRating] = useState(0);
+    const [errorReview, setErrorReview] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         storeApi.getBook(id)
             .then(response => {
                 setBook(response.data)
-                setCommentsVar(response.data.comments)
+                setReviewsVal(response.data.reviews)
+                if (response.data.reviews.length !== 0) {
+                    const totalRating = response.data.reviews.reduce((acc, review) => acc + review.rating, 0);
+                    setCurrRating(totalRating / response.data.reviews.length)
+                }
             })
             .catch(error => {
                 handleLogError(error)
             })
-    }, [])
+    }, [id])
 
-    const handleCreateComment = () => {
+    const handleCreateReview = () => {
+        if (!userIsAuthenticated()) {
+            navigate('/login')
+            return
+        }
         let commentString2 = commentString1.trim()
         if (!commentString2) {
+            setErrorReview(true)
+            return
+        }
+        if (ratingValue === 0) {
+            setErrorReview(true)
             return
         }
 
-        const commentReq = { commentString: commentString2 }
-        console.log(commentReq)
-        console.log(book)
-        storeApi.createComment(user, commentReq, book.id)
+        const reviewReq = { commentString: commentString2, rating: ratingValue }
+
+        storeApi.createReview(user, reviewReq, book.id)
             .then(() => {
                 setCommentString1('')
             })
@@ -61,24 +78,12 @@ const ItemDetail = () => {
             })
     }
 
-    let commentList
-    if (commentsVar === null) {
-        commentList = (<></>)
+    let reviewList
+    if (reviewsVal === null) {
+        reviewList = (<></>)
     } else {
-        commentList = commentsVar.map(comment => {
-            return (
-                <Comment>
-                    <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
-                    <Comment.Content>
-                        <Comment.Author as='a'>{comment.user.username}</Comment.Author>
-                        <Comment.Metadata>
-                            <div>{moment(comment.createdAt).format('HH:mm:ss DD/MM/YYYY')}</div>
-                        </Comment.Metadata>
-                        <Comment.Text>{comment.commentString}</Comment.Text>
-                    </Comment.Content>
-                </Comment>
-
-            )
+        reviewList = reviewsVal.map(review => {
+            return <ItemReview {...review}/>
         })
     }
 
@@ -89,10 +94,24 @@ const ItemDetail = () => {
             render: () =>
                 <Tab.Pane>
                     <Comment.Group>
-                        {commentList}
-                        <Form reply onSubmit={handleCreateComment}>
-                            <Form.TextArea name='commentString' style={{ 'height': '100%', 'width': '75%' }} value={commentString1} onChange={(e) => { setCommentString1(e.target.value) }}  />
-                            <Button content='Thêm bình luận' labelPosition='left' icon='edit' primary />
+                        <Header as='h5' dividing>{reviewsVal.length} bình luận</Header>
+                        <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                            {reviewList}
+                        </div>
+                        <Form reply onSubmit={handleCreateReview}>
+                            <Form.TextArea
+                                name='reviewString'
+                                style={{ 'height': '100%', 'width': '75%' }}
+                                placeholder='Viết bình luận...'
+                                value={commentString1}
+                                onChange={(e) => { setCommentString1(e.target.value) }}
+                                error={errorReview ? { content: 'Xin hãy đánh giá', pointing: 'left' } : null}
+                            />
+                            <div>
+                                Đánh giá của bạn:
+                                <Rating icon='star' maxRating={5} onRate={(e, { rating }) => { setRatingValue(rating) }} />
+                            </div>
+                            <Button content='Thêm đánh giá' labelPosition='left' icon='edit' primary />
                         </Form>
                     </Comment.Group>
                 </Tab.Pane>
@@ -102,18 +121,18 @@ const ItemDetail = () => {
     return (
         <Container>
             <Segment>
-                <Grid>
+                <Grid stackable>
                     <Grid.Column width={6}>
                         <Image src={book.imgUrl} />
                     </Grid.Column>
                     <Grid.Column width={10}>
                         <Container>
-                            <Grid divided='vertically'>
+                            <Grid stackable divided='vertically'>
                                 <Grid.Row divided>
                                     <Header as='h2'>{book.title.toUpperCase()}</Header>
                                     <Grid.Column width={5}>
-                                        <span><Rating icon='star' defaultRating={3} maxRating={5} disabled /></span>
-                                        <span>0 đánh giá</span>
+                                        <span><Rating icon='star' rating={currRating} maxRating={5} disabled /></span>
+                                        <span>{reviewsVal === null ? 0 : reviewsVal.length} đánh giá</span>
                                     </Grid.Column>
                                     <Grid.Column width={3}>
                                         Đã bán: 0
@@ -149,7 +168,7 @@ const ItemDetail = () => {
                                                 </Button.Group>
                                             </Grid.Column>
                                         </Grid>
-                                        <Button icon labelPosition='right' color='blue' onClick={() => {setItemQuantity(book.id, amount)}} >
+                                        <Button icon labelPosition='right' color='blue' onClick={() => { setItemQuantity(book.id, amount) }} >
                                             Thêm vào giỏ<Icon name='cart plus' />
                                         </Button>
                                         <Button icon labelPosition='right' color='red'>

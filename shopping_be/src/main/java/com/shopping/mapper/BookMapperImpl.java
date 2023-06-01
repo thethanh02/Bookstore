@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.shopping.controller.payload.BookDto;
 import com.shopping.model.Book;
-import com.shopping.model.Comment;
+import com.shopping.model.Review;
 
 @Service
 public class BookMapperImpl implements BookMapper {
@@ -15,16 +15,16 @@ public class BookMapperImpl implements BookMapper {
 	public BookDto toBookDto(Book book) {
 		if (book == null)
 			return null;
-		List<BookDto.CommentDto> comments = book.getComments().stream().map(this::toBookDtoCommentDto).toList();
-		return new BookDto(book.getId(), book.getTitle(), book.getAuthor(), book.getDescription(), book.getReleaseDate(), book.getPageNum(), book.getCategory(), book.getPrice(), book.getImgUrl(), comments);
+		List<BookDto.ReviewDto> reviews = book.getReviews().stream().map(this::toBookDtoReviewDto).toList();
+		return new BookDto(book.getId(), book.getTitle(), book.getAuthor(), book.getDescription(), book.getReleaseDate(), book.getPageNum(), book.getCategory(), book.getPrice(), book.getImgUrl(), reviews);
 	}
 
-	private BookDto.CommentDto toBookDtoCommentDto(Comment comment) {
-        if (comment == null) {
+	private BookDto.ReviewDto toBookDtoReviewDto(Review review) {
+        if (review == null) {
             return null;
         }
-        BookDto.CommentDto.UserDto userDto = new BookDto.CommentDto.UserDto(comment.getUser().getUsername());
-        return new BookDto.CommentDto(comment.getId(), comment.getCommentString(), userDto, comment.getCreatedAt());
+        BookDto.ReviewDto.UserDto userDto = new BookDto.ReviewDto.UserDto(review.getUser().getName());
+        return new BookDto.ReviewDto(review.getId(), review.getCommentString(), review.getRating(), userDto, review.getCreatedAt());
     }
 	
 }

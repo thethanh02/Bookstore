@@ -60,6 +60,10 @@ export function ShoppingCartProvider({ children }) {
         });
     }
 
+    function removeAllFromCart() {
+        setCartItems([]);
+    }
+
     function setItemQuantity(id, amount) {
         setCartItems(currItems => {
             if (currItems.find(item => item.id === id) == null) {
@@ -81,20 +85,20 @@ export function ShoppingCartProvider({ children }) {
     }
 
     return (
-        React.createElement(ShoppingCartContext.Provider, 
-            { value: {
-                getItemQuantity,
-                increaseItemQuantity,
-                decreaseItemQuantity,
-                removeFromCart,
-                openCart,
-                closeCart,
-                cartItems,
-                cartQuantity,
-                setItemQuantity
-            }},
-            children,
-            React.createElement(ShoppingCart, { isOpen: isOpen })
-        )
+        <ShoppingCartContext.Provider value={{
+            getItemQuantity,
+            increaseItemQuantity,
+            decreaseItemQuantity,
+            removeFromCart,
+            removeAllFromCart,
+            setItemQuantity,
+            openCart,
+            closeCart,
+            cartItems,
+            cartQuantity,
+        }}>
+            {children}
+            <ShoppingCart isOpen={isOpen} />
+        </ShoppingCartContext.Provider>
     );
 }

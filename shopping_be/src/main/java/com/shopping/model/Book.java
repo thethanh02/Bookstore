@@ -26,16 +26,23 @@ public class Book {
 	private Long price;	
 	private String imgUrl;
 	
-//	@OneToMany(mappedBy = "books", cascade = CascadeType.ALL)
-//	private Collection<BookInCart> booksInCart;
+	@OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
-	
-	public void addComment(Comment comment) {
-    	if (this.comments == null)
-    		this.comments = new ArrayList<>();
-    	this.comments.add(comment);
-    }
+	private List<CartItem> cartItems = new ArrayList<>();
+
+	public Book(String title, String author, String description, Date releaseDate, int pageNum, String category,
+			Long price, String imgUrl) {
+		this.title = title;
+		this.author = author;
+		this.description = description;
+		this.releaseDate = releaseDate;
+		this.pageNum = pageNum;
+		this.category = category;
+		this.price = price;
+		this.imgUrl = imgUrl;
+	}
+
 	
 }

@@ -4,36 +4,36 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.shopping.exception.EntityNotFoundException;
-import com.shopping.model.Comment;
-import com.shopping.repository.CommentRepository;
+import com.shopping.model.Review;
+import com.shopping.repository.ReviewRepository;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class CommentServiceImpl implements CommentService {
+public class ReviewServiceImpl implements ReviewService {
 	
-	private final CommentRepository commentRepository;
+	private final ReviewRepository commentRepository;
 
     @Override
-    public List<Comment> getComments() {
+    public List<Review> getReviews() {
         return commentRepository.findAllByOrderByCreatedAtDesc();
     }
 
     @Override
-    public Comment validateAndGetComment(String id) {
+    public Review validateAndGetReview(String id) {
         return commentRepository.findById(Long.valueOf(id))
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Comment with id %s not found", id)));
     }
 
     @Override
-    public Comment saveComment(Comment comment) {
-        return commentRepository.save(comment);
+    public Review saveReview(Review review) {
+        return commentRepository.save(review);
     }
 
     @Override
-    public void deleteComment(Comment comment) {
-    	commentRepository.delete(comment);
+    public void deleteReview(Review review) {
+    	commentRepository.delete(review);
     }
     
 }

@@ -5,7 +5,7 @@ import { formatCurrency } from "../utils/formatCurrency"
 import { handleLogError } from '../utils/Helpers'
 import { storeApi } from '../misc/StoreApi';
 
-export function CartItem({ id, quantity }) {
+export function CartItem({ id, quantity, isDeleteBtnActive }) {
     const [storeItems, setStoreItems] = useState([])
 
     useEffect(() => {
@@ -24,7 +24,7 @@ export function CartItem({ id, quantity }) {
 
     return (
         <Stack direction="horizontal" gap={2} className="d-flex align-items-center">
-            <img src={item.imgUrl} style={{ height: "125px", objectFit: "cover"}}></img>
+            <img src={item.imgUrl} style={{ height: "120px", objectFit: "cover", borderRadius: "4%" }} alt={item.title} ></img>
             <div className="me-auto">
                 <div>
                     {item.title} {" "}
@@ -39,7 +39,7 @@ export function CartItem({ id, quantity }) {
                 </div>
             </div>
             <div> {formatCurrency(item.price * quantity)}</div>
-            <Button variant="outline-danger" size="sm" onClick={() => removeFromCart(item.id)}>&times;</Button>
+            {isDeleteBtnActive && <Button variant="outline-danger" size="sm" onClick={() => removeFromCart(item.id)}>&times;</Button>}
         </Stack>
     )
 }

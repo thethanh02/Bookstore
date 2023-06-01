@@ -11,23 +11,25 @@ import BookPage from './components/admin/BookPage'
 import BookEdit from './components/admin/BookEdit'
 import ItemDetail from './components/common/ItemDetail'
 import { ShoppingCartProvider } from './components/context/ShoppingCartContext'
+import Checkout from './components/common/Checkout'
 
 function App() {
     return (
         <AuthProvider>
             <ShoppingCartProvider>
                 <Router>
-                    <Navbar />
                     <Routes>
-                        <Route path='/' element={<Store />} />
-                        <Route path='/products/:id' element={<ItemDetail />} />
-                        <Route path='/login' element={<Login />} />
-                        <Route path='/signup' element={<Signup />} />
-                        <Route path="/adminpage" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
-                        <Route path="/books" element={<PrivateRoute><BookPage /></PrivateRoute>} />
-                        <Route path="/books/:id" element={<PrivateRoute><BookEdit /></PrivateRoute>} />
-                        {/* <Route path="/userpage" element={<PrivateRoute><UserPage /></PrivateRoute>} /> */}
-                        <Route path="*" element={<Navigate to="/" />} />
+                        <Route path='/' element={<Navbar />}>
+                            <Route index element={<Store />} />
+                            <Route path='/products/:id' element={<ItemDetail />} />
+                            <Route path='/login' element={<Login />} />
+                            <Route path='/signup' element={<Signup />} />
+                            <Route path="/adminpage" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
+                            <Route path="/books" element={<PrivateRoute><BookPage /></PrivateRoute>} />
+                            <Route path="/books/:id" element={<PrivateRoute><BookEdit /></PrivateRoute>} />
+                            <Route path="*" element={<Navigate to="/" />} />
+                        </Route>
+                        <Route path="/checkouts" element={<PrivateRoute><Checkout /></PrivateRoute>} />
                     </Routes>
                 </Router>
             </ShoppingCartProvider>

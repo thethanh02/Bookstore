@@ -19,9 +19,9 @@ const Store = () => {
 
     return (
         <Container>
-            <Grid doubling columns={5}>
+            <Grid doubling stackable columns={5}>
                 {storeItems.map(item => (
-                    <StoreItem {...item} />
+                    <StoreItem key={item.id} {...item} />
                 ))}
             </Grid>
         </Container>

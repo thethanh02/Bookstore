@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Offcanvas, Stack } from "react-bootstrap";
+import { Button, Offcanvas, Stack } from "react-bootstrap";
 import { useShoppingCart } from "../context/ShoppingCartContext";
 import { CartItem } from "../common/CartItem"
 import { formatCurrency } from '../utils/formatCurrency';
@@ -27,11 +27,12 @@ export function ShoppingCart({ isOpen }) {
         <Offcanvas.Body>
             <Stack gap={3}>
                 {cartItems.map(item => (
-                    <CartItem key={item.id} {...item} />
+                    <CartItem key={item.id} {...item} isDeleteBtnActive={true} />
                 ))}
             </Stack>
         </Offcanvas.Body>
         <Offcanvas.Header>
+            {cartItems.length > 0 && <Button onClick={() => {window.location.href = '/checkouts';}}>Thanh toán</Button>}
             <Offcanvas.Title className="ms-auto fw-bold fs-5">
                 Tạm tính{": "}
                 <span className='text-danger'>

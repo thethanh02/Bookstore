@@ -11,15 +11,13 @@ import moment from 'moment';
 const BookPage = () => {
     const { getUser } = useAuth()
     const user = getUser()
-    const [isAdmin, setIsAdmin] = useState(true)
+    const isAdmin = (user.data.rol[0] === 'ADMIN')
     const [books, setBooks] = useState([])
     const [viewTable, setViewTable] = useState(false)
     const [confirmOpen, setConfirmOpen] = useState(false)
     const [deleteItemId, setDeleteItemId] = useState(null);
 
     useEffect(() => {
-        setIsAdmin(user.data.rol[0] === 'ADMIN')
-
         storeApi.getBooks()
             .then(response => {
                 setBooks(response.data)
@@ -27,7 +25,7 @@ const BookPage = () => {
             .catch(error => {
                 handleLogError(error)
             })
-    }, [getUser])
+    }, [])
 
     if (!isAdmin) {
         return <Navigate to='/' />
@@ -104,33 +102,26 @@ const BookPage = () => {
                     Create<Icon name='add' />
                 </Button>
                 <Checkbox label='Other view' name='viewTable' id='viewTable' check={viewTable} onChange={onChangeViewTable} autoComplete='viewTable' />
-
-                <Grid stackable divided>
-                    <Grid.Row columns='2'>
-                        <Grid.Column width='5'>
-                        </Grid.Column>
-                        <Grid.Column>
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-                <Table compact striped selectable>
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.HeaderCell width={1}>ID</Table.HeaderCell>
-                            <Table.HeaderCell width={2}>Title</Table.HeaderCell>
-                            <Table.HeaderCell width={2}>Author</Table.HeaderCell>
-                            <Table.HeaderCell width={4}>Description</Table.HeaderCell>
-                            <Table.HeaderCell width={2}>Release Date</Table.HeaderCell>
-                            <Table.HeaderCell width={1}>Page</Table.HeaderCell>
-                            <Table.HeaderCell width={1}>Category</Table.HeaderCell>
-                            <Table.HeaderCell width={1}>Image</Table.HeaderCell>
-                            <Table.HeaderCell width={1} />
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body>
-                        {bookList}
-                    </Table.Body>
-                </Table>
+                <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
+                    <Table compact striped selectable>
+                        <Table.Header style={{ position: 'sticky', top: 0, zIndex: 1 }}>
+                            <Table.Row>
+                                <Table.HeaderCell width={1}>ID</Table.HeaderCell>
+                                <Table.HeaderCell width={2}>Title</Table.HeaderCell>
+                                <Table.HeaderCell width={2}>Author</Table.HeaderCell>
+                                <Table.HeaderCell width={4}>Description</Table.HeaderCell>
+                                <Table.HeaderCell width={2}>Release Date</Table.HeaderCell>
+                                <Table.HeaderCell width={1}>Page</Table.HeaderCell>
+                                <Table.HeaderCell width={1}>Category</Table.HeaderCell>
+                                <Table.HeaderCell width={1}>Image</Table.HeaderCell>
+                                <Table.HeaderCell width={1} />
+                            </Table.Row>
+                        </Table.Header>
+                        <Table.Body>
+                            {bookList}
+                        </Table.Body>
+                    </Table>
+                </div>
                 <Confirm
                     open={confirmOpen}
                     header='Xác nhận'

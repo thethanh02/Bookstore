@@ -9,14 +9,15 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "comment")
-public class Comment {
+@Table(name = "review")
+public class Review {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	private String commentString;
+	private int rating;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -28,8 +29,9 @@ public class Comment {
 	
     private ZonedDateTime createdAt;
 
-    public Comment(String commentString) {
+    public Review(String commentString, int rating) {
         this.commentString = commentString;
+        this.rating = rating;
     }
 
     @PrePersist

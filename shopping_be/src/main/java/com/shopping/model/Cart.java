@@ -13,9 +13,15 @@ import lombok.*;
 public class Cart {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "user_id")
 	private Long id;
 	
-//	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
-//	private Collection<BookInCart> booksInCart;
+	@OneToOne(fetch = FetchType.LAZY)
+	@MapsId
+	@JoinColumn(name = "user_id")
+    private User user;
+	
+	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CartItem> cartItems = new ArrayList<>();
+	
 }

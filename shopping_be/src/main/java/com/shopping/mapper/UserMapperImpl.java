@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.shopping.model.Comment;
+import com.shopping.model.Review;
 import com.shopping.model.User;
 import com.shopping.controller.payload.UserDto;
 
@@ -20,7 +20,7 @@ public class UserMapperImpl implements UserMapper {
         return new UserDto(user.getId(), user.getUsername(), user.getName(), user.getEmail(), user.getRole(), comments);
     }
     
-    private UserDto.CommentDto toUserDtoCommentDto(Comment comment) {
+    private UserDto.CommentDto toUserDtoCommentDto(Review comment) {
         if (comment == null) {
             return null;
         }

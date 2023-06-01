@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 
 import com.shopping.controller.payload.*;
-import com.shopping.mapper.CommentMapper;
+import com.shopping.mapper.ReviewMapper;
 import com.shopping.model.*;
 import com.shopping.security.CustomUserDetails;
 import com.shopping.service.*;
@@ -17,26 +17,25 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/comments")
-public class CommentController {
+public class ReviewController {
 	
 	private final UserService userService;
 	private final BookService bookService;
-	private final CommentService commentService;
-	private final CommentMapper commentMapper;
+	private final ReviewService commentService;
+	private final ReviewMapper reviewMapper;
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/new/{bookId}")
-	public CommentDto createComment(@AuthenticationPrincipal CustomUserDetails currentUser,
-							@Valid @RequestBody CreateCommentRequest createCommentRequest,
+	public ReviewDto Review(@AuthenticationPrincipal CustomUserDetails currentUser,
+							@Valid @RequestBody CreateReviewRequest createReviewRequest,
 							@PathVariable String bookId) {
-		System.out.println(1);
 		User user = userService.validateAndGetUserByUsername(currentUser.getUsername());
-		Comment comment = commentMapper.toComment(createCommentRequest);
-		comment.setUser(user);
+		Review review = reviewMapper.toReview(createReviewRequest);
+		review.setUser(user);
 		Book book1 = bookService.validateAndGetBookById(bookId);
-		comment.setBook(book1);
+		review.setBook(book1);
 		
-    	return commentMapper.toCommentDto(commentService.saveComment(comment));
+    	return reviewMapper.toReviewDto(commentService.saveReview(review));
     }
 	
 }

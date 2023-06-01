@@ -87,17 +87,17 @@ const BookEdit = () => {
             <Container>
                 <Header as='h2' textAlign='center'>Book</Header>
                 <Form onSubmit={handleSubmit}>
-                    <Grid>
+                    <Grid stackable>
                         <Grid.Row>
                             <Grid.Column width={8}>
                                 <Form.Group widths='equal'>
-                                    <Form.Input fluid className='required' label='Title' name='title' placeholder='Title' value={book.title} onChange={handleChange} disabled={viewMode} />
-                                    <Form.Input fluid className='required' label='Author' name='author' placeholder='Author' value={book.author} onChange={handleChange} disabled={viewMode} />
+                                    <Form.Input fluid className='required' label='Title' name='title' placeholder='Title' value={book.title} onChange={handleChange} readOnly={viewMode} />
+                                    <Form.Input fluid className='required' label='Author' name='author' placeholder='Author' value={book.author} onChange={handleChange} readOnly={viewMode} />
                                 </Form.Group>
-                                <Form.TextArea label='Description' name='description' placeholder="Description" value={book.description} onChange={handleChange} disabled={viewMode} />
+                                <Form.TextArea label='Description' name='description' placeholder="Description" value={book.description} onChange={handleChange} readOnly={viewMode} />
                                 <Form.Group widths='equal'>
-                                    <Form.Input fluid className='required' label='Release Date' name='releaseDate' type='date' value={book.releaseDate} onChange={handleChange} disabled={viewMode} />
-                                    <Form.Input fluid label='Page Number' name='pageNum' type='number' value={book.pageNum} onChange={handleChange} disabled={viewMode} />
+                                    <Form.Input fluid className='required' label='Release Date' name='releaseDate' type='date' value={book.releaseDate} onChange={handleChange} readOnly={viewMode} />
+                                    <Form.Input fluid label='Page Number' name='pageNum' type='number' value={book.pageNum} onChange={handleChange} readOnly={viewMode} />
                                 </Form.Group>
                                 <Form.Group widths='equal'>
                                     <Form.Select
@@ -108,10 +108,10 @@ const BookEdit = () => {
                                         value={book.category}
                                         defaultValue={book.category}
                                         onChange={handleChange}
-                                        disabled={viewMode}
+                                        readOnly={viewMode}
                                     />
                                     {/* <Form.Input fluid label='Category' name='category' placeholder='Category' value={book.category} onChange={handleChange} /> */}
-                                    <Form.Input fluid label='Price' labelPosition='right' name='price' type='number' value={book.price} onChange={handleChange} disabled={viewMode} >
+                                    <Form.Input fluid label='Price' labelPosition='right' name='price' type='number' value={book.price} onChange={handleChange} readOnly={viewMode} >
                                         <input />
                                         <Label>VNĐ</Label>
                                     </Form.Input>
