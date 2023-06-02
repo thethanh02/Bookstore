@@ -83,24 +83,24 @@ const BookEdit = () => {
     return (
         <div>
             <Container>
-                <Header as='h2' textAlign='center'>Book</Header>
+                <Header as='h2' textAlign='center'>Sách</Header>
                 <Form onSubmit={handleSubmit}>
                     <Grid stackable>
                         <Grid.Row>
                             <Grid.Column width={8}>
                                 <Form.Group widths='equal'>
-                                    <Form.Input fluid className='required' label='Title' name='title' placeholder='Title' value={book.title} onChange={handleChange} readOnly={viewMode} />
-                                    <Form.Input fluid className='required' label='Author' name='author' placeholder='Author' value={book.author} onChange={handleChange} readOnly={viewMode} />
+                                    <Form.Input fluid className='required' label='Tiêu đề' name='title' placeholder='Tiêu đề' value={book.title} onChange={handleChange} readOnly={viewMode} />
+                                    <Form.Input fluid className='required' label='Tác giả' name='author' placeholder='Tác giả' value={book.author} onChange={handleChange} readOnly={viewMode} />
                                 </Form.Group>
-                                <Form.TextArea label='Description' name='description' placeholder="Description" value={book.description} onChange={handleChange} readOnly={viewMode} />
+                                <Form.TextArea label='Mô tả' name='description' placeholder="Mô tả" value={book.description} onChange={handleChange} readOnly={viewMode} />
                                 <Form.Group widths='equal'>
-                                    <Form.Input fluid className='required' label='Release Date' name='releaseDate' type='date' value={book.releaseDate} onChange={handleChange} readOnly={viewMode} />
-                                    <Form.Input fluid label='Page Number' name='pageNum' type='number' value={book.pageNum} onChange={handleChange} readOnly={viewMode} />
+                                    <Form.Input fluid className='required' label='Ngày phát hành' name='releaseDate' type='date' value={book.releaseDate} onChange={handleChange} readOnly={viewMode} />
+                                    <Form.Input fluid label='Số trang' name='pageNum' type='number' value={book.pageNum} onChange={handleChange} readOnly={viewMode} />
                                 </Form.Group>
                                 <Form.Group widths='equal'>
                                     <Form.Dropdown
                                         selection
-                                        label='Category'
+                                        label='Thể loại'
                                         name='category'
                                         options={categoryOptions}
                                         placeholder='Thể loại'
@@ -109,7 +109,7 @@ const BookEdit = () => {
                                         disabled={viewMode}
                                     />
                                     {/* <Form.Input fluid label='Category' name='category' placeholder='Category' value={book.category} onChange={handleChange} /> */}
-                                    <Form.Input fluid label='Price' labelPosition='right' name='price' type='number' value={book.price} onChange={handleChange} readOnly={viewMode} >
+                                    <Form.Input fluid label='Giá' labelPosition='right' name='price' type='number' value={book.price} onChange={handleChange} readOnly={viewMode} >
                                         <input />
                                         <Label>VNĐ</Label>
                                     </Form.Input>
@@ -121,7 +121,7 @@ const BookEdit = () => {
                                         icon="upload"
                                         label={{
                                             basic: true,
-                                            content: 'Select file(s)'
+                                            content: 'Select image'
                                         }}
                                         labelPosition="right"
                                         type='button'

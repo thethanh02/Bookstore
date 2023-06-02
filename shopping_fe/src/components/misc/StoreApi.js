@@ -17,7 +17,8 @@ export const storeApi = {
     createReview,
     addCartItem,
     updateCartItem,
-    deleteCartItem
+    deleteCartItem,
+    addListCartItem
 }
 
 function authenticate(username, password) {
@@ -104,6 +105,12 @@ function updateCartItem(user, cartItem) {
 
 function deleteCartItem(user, cartItemId) {
     return instance.delete(`/api/cartitem/${cartItemId}`, {
+        headers: { 'Authorization': bearerAuth(user) }
+    })
+}
+
+function addListCartItem(user, cartItems) {
+    return instance.post(`/api/cartitem/newlist`, cartItems, {
         headers: { 'Authorization': bearerAuth(user) }
     })
 }

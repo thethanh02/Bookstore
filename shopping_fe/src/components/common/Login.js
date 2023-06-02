@@ -1,101 +1,117 @@
-import React, { Component } from 'react'
-import { NavLink, Navigate } from 'react-router-dom'
-import { Button, Form, Grid, Segment, Message } from 'semantic-ui-react'
-import AuthContext from '../context/AuthContext'
-import { storeApi } from '../misc/StoreApi'
-import { parseJwt, handleLogError } from '../utils/Helpers'
+import React, { useState, useContext, useEffect } from 'react';
+import { NavLink, Navigate } from 'react-router-dom';
+import { Button, Form, Grid, Segment, Message } from 'semantic-ui-react';
+import AuthContext from '../context/AuthContext';
+import { storeApi } from '../misc/StoreApi';
+import { parseJwt, handleLogError } from '../utils/Helpers';
+import { useShoppingCart } from '../context/ShoppingCartContext';
 
-class Login extends Component {
-    static contextType = AuthContext
+const Login = () => {
+    const { userIsAuthenticated, userLogin } = useContext(AuthContext);
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [isLoggedIn, setLoggedIn] = useState(false);
+    const [isError, setError] = useState(false);
+    const { cartItems, setCartItems } = useShoppingCart();
 
-    state = {
-        username: '',
-        password: '',
-        isLoggedIn: false,
-        isError: false
-    }
+    useEffect(() => {
+        const isLoggedIn = userIsAuthenticated();
+        setLoggedIn(isLoggedIn);
+    }, [userIsAuthenticated]);
 
-    componentDidMount() {
-        const Auth = this.context
-        const isLoggedIn = Auth.userIsAuthenticated()
-        this.setState({ isLoggedIn })
-    }
+    const handleInputChange = (e, { name, value }) => {
+        if (name === 'username') {
+            setUsername(value);
+        } else if (name === 'password') {
+            setPassword(value);
+        }
+    };
 
-    handleInputChange = (e, { name, value }) => {
-        this.setState({ [name]: value })
-    }
+    const handleSubmit = (e) => {
+        e.preventDefault();
 
-    handleSubmit = (e) => {
-        e.preventDefault()
-
-        const { username, password } = this.state
         if (!(username && password)) {
-            this.setState({ isError: true })
-            return
+            setError(true);
+            return;
         }
 
-        storeApi.authenticate(username, password)
-            .then(response => {
-                const { accessToken } = response.data
-                const data = parseJwt(accessToken)
-                const user = { data, accessToken }
+        storeApi
+            .authenticate(username, password)
+            .then((response) => {
+                const { accessToken } = response.data;
+                const data = parseJwt(accessToken);
+                const user = { data, accessToken };
 
-                const Auth = this.context
-                Auth.userLogin(user)
+                userLogin(user);
 
-                this.setState({
-                    username: '',
-                    password: '',
-                    isLoggedIn: true,
-                    isError: false
-                })
+                storeApi.getUserMe(user)
+                    .then(response => {
+                        if (response.data.cart.cartItems.length > 0) {
+                            setCartItems(response.data.cart.cartItems)
+                        } else if (cartItems.length > 0) {
+                            storeApi.addListCartItem(user, cartItems)
+                        }
+                    })
+
+                setUsername('');
+                setPassword('');
+                setLoggedIn(true);
+                setError(false);
             })
-            .catch(error => {
-                handleLogError(error)
-                this.setState({ isError: true })
-            })
-    }
+            .catch((error) => {
+                handleLogError(error);
+                setError(true);
+            });
+    };
 
-    render() {
-        const { isLoggedIn, isError } = this.state
-        if (isLoggedIn) {
-            return <Navigate to={'/'} />
-        } else {
-            return (
-                <Grid textAlign='center'>
-                    <Grid.Column style={{ maxWidth: 450 }}>
-                        <Form size='large' onSubmit={this.handleSubmit}>
-                            <Segment>
-                                <Form.Input
-                                    fluid
-                                    autoFocus
-                                    name='username'
-                                    icon='user'
-                                    iconPosition='left'
-                                    placeholder='Username'
-                                    onChange={this.handleInputChange}
-                                />
-                                <Form.Input
-                                    fluid
-                                    name='password'
-                                    icon='lock'
-                                    iconPosition='left'
-                                    placeholder='Password'
-                                    type='password'
-                                    onChange={this.handleInputChange}
-                                />
-                                <Button color='red' fluid size='large'>Login</Button>
-                            </Segment>
-                        </Form>
-                        <Message>{`Don't have already an account? `}
-                            <a href='/signup' color='blue' as={NavLink} to="/signup">Sign Up</a>
+    if (isLoggedIn) {
+        return <Navigate to={'/'} />;
+    } else {
+        return (
+            <Grid textAlign='center'>
+                <Grid.Column style={{ maxWidth: 450 }}>
+                    <Form size='large' onSubmit={handleSubmit}>
+                        <Segment>
+                            <Form.Input
+                                fluid
+                                autoFocus
+                                name='username'
+                                icon='user'
+                                iconPosition='left'
+                                placeholder='Username'
+                                value={username}
+                                onChange={handleInputChange}
+                            />
+                            <Form.Input
+                                fluid
+                                name='password'
+                                icon='lock'
+                                iconPosition='left'
+                                placeholder='Password'
+                                type='password'
+                                value={password}
+                                onChange={handleInputChange}
+                            />
+                            <Button color='red' fluid size='large'>
+                                Login
+                            </Button>
+                        </Segment>
+                    </Form>
+                    <Message>
+                        {"Don't have already an account? "}
+                        <a href='/signup' color='blue' as={NavLink} to='/signup'>
+                            Sign Up
+                        </a>
+                    </Message>
+                    {isError && (
+                        <Message negative>
+                            The username or password provided is incorrect!
                         </Message>
-                        {isError && <Message negative>The username or password provided are incorrect!</Message>}
-                    </Grid.Column>
-                </Grid>
-            )
-        }
+                    )}
+                </Grid.Column>
+            </Grid>
+        );
     }
-}
+};
 
-export default Login
+export default Login;

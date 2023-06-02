@@ -5,7 +5,7 @@ import { Comment, Icon } from 'semantic-ui-react';
 const ItemReview = (review) => {
     return (
         <Comment key={review.id}>
-            <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
+            <Comment.Avatar src='/imgs/avtdefault.jpg' />
             <Comment.Content>
                 <Comment.Author as='a'>{review.user.name}</Comment.Author>
                 {/* <div /> */}

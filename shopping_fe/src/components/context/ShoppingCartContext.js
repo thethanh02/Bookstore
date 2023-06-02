@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useLocalStorage } from './../utils/useLocalStorage';
 import { ShoppingCart } from '../common/ShoppingCart';
-import { useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { storeApi } from '../misc/StoreApi';
 
@@ -14,16 +13,7 @@ export function useShoppingCart() {
 export function ShoppingCartProvider({ children }) {
     const [isOpen, setIsOpen] = useState(false);
     const [cartItems, setCartItems] = useLocalStorage("shopping-cart", []);
-
     const { userIsAuthenticated, getUser } = useAuth()
-    useEffect(() => {
-        if (userIsAuthenticated()) {
-            storeApi.getUserMe(getUser())
-                .then(response => {
-                    setCartItems(response.data.cart.cartItems)
-                })
-        }
-    }, [])
 
     const cartQuantity = cartItems.reduce(
         (quantity, item) => item.quantity + quantity, 0);
@@ -84,6 +74,7 @@ export function ShoppingCartProvider({ children }) {
             closeCart,
             cartItems,
             cartQuantity,
+            setCartItems
         }}>
             {children}
             <ShoppingCart isOpen={isOpen} />

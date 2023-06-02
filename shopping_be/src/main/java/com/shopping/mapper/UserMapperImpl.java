@@ -8,6 +8,7 @@ import com.shopping.model.*;
 
 import lombok.RequiredArgsConstructor;
 
+import com.shopping.controller.payload.CartItemDto;
 import com.shopping.controller.payload.UserDto;
 
 @RequiredArgsConstructor
@@ -28,16 +29,16 @@ public class UserMapperImpl implements UserMapper {
         if (cart == null) {
             return null;
         }
-        List<UserDto.CartDto.CartItemDto> cartItems = cart.getCartItems().stream().map(this::toUserDtoCartDtoCartItemDto).toList();
+        List<CartItemDto> cartItems = cart.getCartItems().stream().map(this::toUserDtoCartDtoCartItemDto).toList();
         return new UserDto.CartDto(cart.getId(), cartItems);
     }
     
-    private UserDto.CartDto.CartItemDto toUserDtoCartDtoCartItemDto(CartItem cartItem) {
+    private CartItemDto toUserDtoCartDtoCartItemDto(CartItem cartItem) {
         if (cartItem == null) {
             return null;
         }
 
-        return new UserDto.CartDto.CartItemDto(cartItem.getId(), cartItem.getQuantity(), bookMapper.toBookDto(cartItem.getBook()));
+        return new CartItemDto(cartItem.getId(), cartItem.getQuantity(), bookMapper.toBookDto(cartItem.getBook()));
     }
     
 }

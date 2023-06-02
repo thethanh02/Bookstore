@@ -6,8 +6,5 @@ public record UserDto(Long id, String username, String name, String email, Strin
 	
 	public record CartDto(Long id, List<CartItemDto> cartItems) {
 		
-		public record CartItemDto(Long id, int quantity, BookDto book) {
-			
-	    }
     }
 }

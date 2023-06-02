@@ -21,7 +21,7 @@ public class ReviewMapperImpl implements ReviewMapper {
         if (review == null) {
             return null;
         }
-        ReviewDto.UserDto userDto = new ReviewDto.UserDto(review.getUser().getUsername());
+        ReviewDto.UserDto userDto = new ReviewDto.UserDto(review.getUser().getUsername(), review.getUser().getName());
         return new ReviewDto(review.getId(), review.getCommentString(), review.getRating(), userDto, review.getCreatedAt());
     }
 }

@@ -52,11 +52,12 @@ const ItemDetail = () => {
             })
     }, [id])
 
-    const handleCreateReview = () => {
+    const handleCreateReview = (event) => {
         if (!userIsAuthenticated()) {
             navigate('/login')
             return
         }
+        event.preventDefault()
         let commentString2 = commentString1.trim()
         if (!commentString2) {
             setErrorReview(true)
@@ -70,8 +71,9 @@ const ItemDetail = () => {
         const reviewReq = { commentString: commentString2, rating: ratingValue }
 
         storeApi.createReview(user, reviewReq, book.id)
-            .then(() => {
+            .then(response => {
                 setCommentString1('')
+                setReviewsVal([...reviewsVal, response.data])
             })
             .catch(error => {
                 handleLogError(error)
