@@ -4,27 +4,40 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.shopping.model.Review;
-import com.shopping.model.User;
+import com.shopping.model.*;
+
+import lombok.RequiredArgsConstructor;
+
 import com.shopping.controller.payload.UserDto;
 
+@RequiredArgsConstructor
 @Service
 public class UserMapperImpl implements UserMapper {
-
+	
+	private final BookMapper bookMapper;
+	
     @Override
     public UserDto toUserDto(User user) {
         if (user == null) {
             return null;
         }
-        List<UserDto.CommentDto> comments = user.getComments().stream().map(this::toUserDtoCommentDto).toList();
-        return new UserDto(user.getId(), user.getUsername(), user.getName(), user.getEmail(), user.getRole(), comments);
+        return new UserDto(user.getId(), user.getUsername(), user.getName(), user.getEmail(), user.getRole(), toUserDtoCartDto(user.getCart()));
     }
     
-    private UserDto.CommentDto toUserDtoCommentDto(Review comment) {
-        if (comment == null) {
+    private UserDto.CartDto toUserDtoCartDto(Cart cart) {
+        if (cart == null) {
             return null;
         }
-        return new UserDto.CommentDto(comment.getId(), comment.getCommentString(), comment.getCreatedAt());
+        List<UserDto.CartDto.CartItemDto> cartItems = cart.getCartItems().stream().map(this::toUserDtoCartDtoCartItemDto).toList();
+        return new UserDto.CartDto(cart.getId(), cartItems);
+    }
+    
+    private UserDto.CartDto.CartItemDto toUserDtoCartDtoCartItemDto(CartItem cartItem) {
+        if (cartItem == null) {
+            return null;
+        }
+
+        return new UserDto.CartDto.CartItemDto(cartItem.getId(), cartItem.getQuantity(), bookMapper.toBookDto(cartItem.getBook()));
     }
     
 }

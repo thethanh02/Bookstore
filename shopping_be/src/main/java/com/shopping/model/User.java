@@ -24,11 +24,11 @@ public class User {
     private String role;
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> comments = new ArrayList<>();
+    private List<Review> reviews = new ArrayList<>();
     
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @PrimaryKeyJoinColumn
-	private Cart cart;
+	private Cart cart = new Cart();
 
     public User(String username, String password, String name, String email, String role) {
         this.username = username;

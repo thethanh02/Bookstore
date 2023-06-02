@@ -44,5 +44,16 @@ public class Book {
 		this.imgUrl = imgUrl;
 	}
 
+	public void setOldAtt(String title, String author, String description, Date releaseDate, int pageNum, String category,
+			Long price, String imgUrl) {
+		this.title = title;
+		this.author = author;
+		this.description = description;
+		this.releaseDate = releaseDate;
+		this.pageNum = pageNum;
+		this.category = category;
+		this.price = price;
+		this.imgUrl = imgUrl;
+	}
 	
 }

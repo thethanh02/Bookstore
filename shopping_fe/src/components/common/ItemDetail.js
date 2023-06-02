@@ -168,7 +168,7 @@ const ItemDetail = () => {
                                                 </Button.Group>
                                             </Grid.Column>
                                         </Grid>
-                                        <Button icon labelPosition='right' color='blue' onClick={() => { setItemQuantity(book.id, amount) }} >
+                                        <Button icon labelPosition='right' color='blue' onClick={() => { setItemQuantity(book, amount) }} >
                                             Thêm vào giỏ<Icon name='cart plus' />
                                         </Button>
                                         <Button icon labelPosition='right' color='red'>

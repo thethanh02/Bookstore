@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.shopping.controller.payload.BookDto;
+import com.shopping.controller.payload.BookRequest;
 import com.shopping.mapper.BookMapper;
 import com.shopping.model.Book;
 import com.shopping.service.BookService;
@@ -59,8 +60,8 @@ public class BookController {
     }
     
     @PostMapping("/new")
-    ResponseEntity<Book> createBook(@Valid @RequestBody Book book) throws URISyntaxException {
-    	String imgBase64 = book.getImgUrl();
+    ResponseEntity<BookDto> createBook(@Valid @RequestBody BookRequest bookRequest) throws URISyntaxException {
+    	String imgBase64 = bookRequest.getImgUrl();
     	if (Base64Detect.isBase64(imgBase64)) {
             byte[] decodedBytes = Base64.getDecoder().decode(imgBase64);
             try {
@@ -70,22 +71,22 @@ public class BookController {
 				Files.write(outputPath, decodedBytes);
 				
 				String imgUrlString = "/imgs/book" + randomName + ".jpg";
-				book.setImgUrl(imgUrlString);
+				bookRequest.setImgUrl(imgUrlString);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 
     	}
-    	
+    	Book book = bookMapper.toBook(bookRequest);
     	Book result = bookService.saveBook(book);
     	return ResponseEntity.created(new URI("/api/books/" + result.getId()))
-                .body(result);
+                .body(bookMapper.toBookDto(result));
     }
     
     @PutMapping("/{id}")
-    ResponseEntity<Book> updateBook(@Valid @RequestBody Book book) {
-    	String imgBase64 = book.getImgUrl();
-    	String imgUrlString = bookService.validateAndGetBookById(book.getId().toString()).getImgUrl();
+    ResponseEntity<BookDto> updateBook(@Valid @RequestBody BookRequest bookRequest) {
+    	String imgBase64 = bookRequest.getImgUrl();
+    	String imgUrlString = bookService.validateAndGetBookById(bookRequest.getId().toString()).getImgUrl();
     	if (Base64Detect.isBase64(imgBase64)) {
             byte[] decodedBytes = Base64.getDecoder().decode(imgBase64);
             String outputFilePath = "../shopping_fe/public" + imgUrlString;
@@ -93,15 +94,15 @@ public class BookController {
             	Path outputPath = Paths.get(outputFilePath);
 				Files.write(outputPath, decodedBytes);
 				
-				book.setImgUrl(imgUrlString);
+				bookRequest.setImgUrl(imgUrlString);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 
     	}
-    	
+    	Book book = bookMapper.toUpdatedBook(bookRequest);
     	Book result = bookService.saveBook(book);
-    	return ResponseEntity.ok().body(result);
+    	return ResponseEntity.ok().body(bookMapper.toBookDto(result));
     }
     
 }

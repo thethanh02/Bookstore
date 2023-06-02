@@ -14,7 +14,10 @@ export const storeApi = {
     getBook,
     createBook,
     updateBook,
-    createComment
+    createReview,
+    addCartItem,
+    updateCartItem,
+    deleteCartItem
 }
 
 function authenticate(username, password) {
@@ -80,9 +83,27 @@ function updateBook(user, bookId, book) {
     })
 }
 
-function createComment(user, comment, bookId) {
-    const url = `/api/comments/new/${bookId}`
-    return instance.post(url, comment, {
+function createReview(user, review, bookId) {
+    const url = `/api/reviews/new/${bookId}`
+    return instance.post(url, review, {
+        headers: { 'Authorization': bearerAuth(user) }
+    })
+}
+
+function addCartItem(user, cartItem) {
+    return instance.post(`/api/cartitem/new`, cartItem, {
+        headers: { 'Authorization': bearerAuth(user) }
+    })
+}
+
+function updateCartItem(user, cartItem) {
+    return instance.put(`/api/cartitem`, cartItem, {
+        headers: { 'Authorization': bearerAuth(user) }
+    })
+}
+
+function deleteCartItem(user, cartItemId) {
+    return instance.delete(`/api/cartitem/${cartItemId}`, {
         headers: { 'Authorization': bearerAuth(user) }
     })
 }

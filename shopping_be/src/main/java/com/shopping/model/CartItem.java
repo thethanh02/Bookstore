@@ -23,4 +23,9 @@ public class CartItem {
 	@JoinColumn(name = "book_id")
 	private Book book;	
 	
+	public CartItem(int quantity, Cart cart, Book book) {
+		this.quantity = quantity;
+		this.cart = cart;
+		this.book = book;
+	}
 }

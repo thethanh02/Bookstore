@@ -50,10 +50,8 @@ const BookEdit = () => {
         return <Navigate to='/' />
     }
 
-    const handleChange = (event) => {
-        const { name, value, type, checked } = event.target
-
-        setBook({ ...book, [name]: type === 'checkbox' ? checked : value })
+    const handleChange = (event, { name, value }) => {
+        setBook({ ...book, [name]: value })
     }
 
     const onChangeImage = (e) => {
@@ -75,9 +73,9 @@ const BookEdit = () => {
         event.preventDefault();
 
         if (book.id) {
-            storeApi.updateBook(user, book.id, book)
+            await storeApi.updateBook(user, book.id, book)
         } else {
-            storeApi.createBook(user, book)
+            await storeApi.createBook(user, book)
         }
         navigate('/books');
     }
@@ -100,15 +98,15 @@ const BookEdit = () => {
                                     <Form.Input fluid label='Page Number' name='pageNum' type='number' value={book.pageNum} onChange={handleChange} readOnly={viewMode} />
                                 </Form.Group>
                                 <Form.Group widths='equal'>
-                                    <Form.Select
-                                        fluid
+                                    <Form.Dropdown
+                                        selection
                                         label='Category'
+                                        name='category'
                                         options={categoryOptions}
                                         placeholder='Thể loại'
                                         value={book.category}
-                                        defaultValue={book.category}
                                         onChange={handleChange}
-                                        readOnly={viewMode}
+                                        disabled={viewMode}
                                     />
                                     {/* <Form.Input fluid label='Category' name='category' placeholder='Category' value={book.category} onChange={handleChange} /> */}
                                     <Form.Input fluid label='Price' labelPosition='right' name='price' type='number' value={book.price} onChange={handleChange} readOnly={viewMode} >

@@ -16,12 +16,12 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/comments")
+@RequestMapping("/api/reviews")
 public class ReviewController {
 	
 	private final UserService userService;
 	private final BookService bookService;
-	private final ReviewService commentService;
+	private final ReviewService reviewService;
 	private final ReviewMapper reviewMapper;
 
 	@ResponseStatus(HttpStatus.CREATED)
@@ -35,7 +35,7 @@ public class ReviewController {
 		Book book1 = bookService.validateAndGetBookById(bookId);
 		review.setBook(book1);
 		
-    	return reviewMapper.toReviewDto(commentService.saveReview(review));
+    	return reviewMapper.toReviewDto(reviewService.saveReview(review));
     }
 	
 }

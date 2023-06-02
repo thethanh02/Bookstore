@@ -2,18 +2,18 @@ package com.shopping.service;
 
 import java.util.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shopping.exception.EntityNotFoundException;
 import com.shopping.model.Book;
 import com.shopping.repository.BookRepository;
 
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 @Service
 public class BookServiceImpl implements BookService {
-	@Autowired
-	private BookRepository bookRepository;
+	private final BookRepository bookRepository;
 
 	@Override
 	public List<Book> getBooks() {

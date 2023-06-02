@@ -1,6 +1,9 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useLocalStorage } from './../utils/useLocalStorage';
 import { ShoppingCart } from '../common/ShoppingCart';
+import { useEffect } from 'react';
+import { useAuth } from './AuthContext';
+import { storeApi } from '../misc/StoreApi';
 
 const ShoppingCartContext = createContext({});
 
@@ -12,83 +15,68 @@ export function ShoppingCartProvider({ children }) {
     const [isOpen, setIsOpen] = useState(false);
     const [cartItems, setCartItems] = useLocalStorage("shopping-cart", []);
 
+    const { userIsAuthenticated, getUser } = useAuth()
+    useEffect(() => {
+        if (userIsAuthenticated()) {
+            storeApi.getUserMe(getUser())
+                .then(response => {
+                    setCartItems(response.data.cart.cartItems)
+                })
+        }
+    }, [])
+
     const cartQuantity = cartItems.reduce(
         (quantity, item) => item.quantity + quantity, 0);
 
     const openCart = () => setIsOpen(true);
     const closeCart = () => setIsOpen(false);
 
-    function getItemQuantity(id) {
-        return cartItems.find(item => item.id === id)?.quantity || 0;
+    function getItemQuantity(book) {
+        return cartItems.find(item => item.book.id === book.id)?.quantity || 0;
     }
 
-    function increaseItemQuantity(id) {
-        setCartItems(currItems => {
-            if (currItems.find(item => item.id === id) == null) {
-                return [...currItems, { id, quantity: 1 }];
-            } else {
-                return currItems.map(item => {
-                    if (item.id === id) {
-                        return { ...item, quantity: item.quantity + 1 };
-                    } else {
-                        return item;
-                    }
-                });
-            }
-        });
-    }
-
-    function decreaseItemQuantity(id) {
-        setCartItems(currItems => {
-            if (currItems.find(item => item.id === id)?.quantity === 1) {
-                return currItems.filter(item => item.id !== id);
-            } else {
-                return currItems.map(item => {
-                    if (item.id === id) {
-                        return { ...item, quantity: item.quantity - 1 };
-                    } else {
-                        return item;
-                    }
-                });
-            }
-        });
-    }
-
-    function removeFromCart(id) {
-        setCartItems(currItems => {
-            return currItems.filter(item => item.id !== id);
-        });
+    function removeFromCart(book) {
+        if (userIsAuthenticated()) {
+            let itemNeedRemove = cartItems.filter(item => item.book.id === book.id)[0];
+            storeApi.deleteCartItem(getUser(), itemNeedRemove.id)
+        }
+        let items = cartItems.filter(item => item.book.id !== book.id);
+        setCartItems(items);
     }
 
     function removeAllFromCart() {
         setCartItems([]);
     }
 
-    function setItemQuantity(id, amount) {
-        setCartItems(currItems => {
-            if (currItems.find(item => item.id === id) == null) {
-                return [...currItems, { id, quantity: amount }];
-            } else {
-                return currItems.map(item => {
-                    if (item.id === id) {
-                        if (item.quantity > 0) {
-                            return { ...item, quantity: item.quantity + amount };
-                        } else {
-                            return { ...item, quantity: amount };
-                        }
-                    } else {
-                        return item;
-                    }
-                });
+    function setItemQuantity(book, amount) {
+        let items
+        if (cartItems.find(item => item.book.id === book.id) == null) {
+            items = [...cartItems, { book, quantity: amount }];
+            if (userIsAuthenticated()) {
+                storeApi.addCartItem(getUser(), { book, quantity: amount })
             }
-        });
+        } else {
+            items = cartItems.map(item => {
+                if (item.book.id === book.id) {
+                    if (item.quantity > 0) {
+                        if (userIsAuthenticated()) {
+                            storeApi.updateCartItem(getUser(), { ...item, quantity: item.quantity + amount })
+                        }
+                        return { ...item, quantity: item.quantity + amount };
+                    } else {
+                        return { ...item, quantity: amount };
+                    }
+                } else {
+                    return item;
+                }
+            });
+        }
+        setCartItems(items);
     }
 
     return (
         <ShoppingCartContext.Provider value={{
             getItemQuantity,
-            increaseItemQuantity,
-            decreaseItemQuantity,
             removeFromCart,
             removeAllFromCart,
             setItemQuantity,
