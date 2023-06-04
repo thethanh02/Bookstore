@@ -31,6 +31,9 @@ public class Book {
 	
 	@OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CartItem> cartItems = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<OrderItem> orderItems = new ArrayList<>();
 
 	public Book(String title, String author, String description, Date releaseDate, int pageNum, String category,
 			Long price, String imgUrl) {

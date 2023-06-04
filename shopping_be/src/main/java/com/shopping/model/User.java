@@ -30,6 +30,9 @@ public class User {
     @PrimaryKeyJoinColumn
 	private Cart cart = new Cart();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders = new ArrayList<>();
+    
     public User(String username, String password, String name, String email, String role) {
         this.username = username;
         this.password = password;
