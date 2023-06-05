@@ -36,4 +36,13 @@ public class CartItemServiceImpl implements CartItemService {
 		cartItemRepository.deleteAll(cartItems);
 	}
 
+	@Override
+	public CartItem validateAndGetCartItemByBookId(List<CartItem> cartItems, Long id) {
+		for (CartItem cartItem : cartItems) {
+			if (cartItem.getBook().getId() == id)
+				return cartItem;
+		}
+		return null;
+	}
+
 }

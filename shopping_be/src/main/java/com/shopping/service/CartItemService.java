@@ -14,4 +14,6 @@ public interface CartItemService {
 	
 	void deleteAllCartItem(List<CartItem> cartItems);
 	
+	CartItem validateAndGetCartItemByBookId(List<CartItem> cartItems, Long id);
+	
 }

@@ -23,13 +23,25 @@ public class CartItemController {
 	private final CartItemService cartItemService;
 	private final CartItemMapper cartItemMapper;
 
-	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping("/new")
-	public CartItemDto addCartItem(@AuthenticationPrincipal CustomUserDetails currentUser,
+	@PostMapping
+	public List<CartItemDto> addCartItem(@AuthenticationPrincipal CustomUserDetails currentUser,
 									@RequestBody CartItemDto cartItemDto) {
 		User user = userService.validateAndGetUserByUsername(currentUser.getUsername());
-		CartItem cartItem = cartItemMapper.toNewCartItem(cartItemDto, user.getCart());
-    	return cartItemMapper.toCartItemDto(cartItemService.saveCartItem(cartItem));
+		CartItem cartItem = cartItemService.validateAndGetCartItemByBookId(user.getCart().getCartItems(), cartItemDto.book().id());
+		List<CartItemDto> newCartItemDtos = new ArrayList<>();
+		for (CartItem item : user.getCart().getCartItems()) {
+			newCartItemDtos.add(cartItemMapper.toCartItemDto(item));
+		}
+		if (cartItem == null) {
+			cartItem = cartItemMapper.toNewCartItem(cartItemDto, user.getCart());
+			CartItem cartItem2 = cartItemService.saveCartItem(cartItem);
+			newCartItemDtos.add(cartItemMapper.toCartItemDto(cartItem2));
+			return newCartItemDtos;
+		} else {
+			cartItem.setQuantity(cartItem.getQuantity() + cartItemDto.quantity());
+			cartItemService.saveCartItem(cartItem);
+			return newCartItemDtos;
+		}
     }
 	
 	@ResponseStatus(HttpStatus.CREATED)
@@ -43,17 +55,6 @@ public class CartItemController {
 			newCartItemDtos.add(cartItemMapper.toCartItemDto(cartItemService.saveCartItem(cartItem)));
 		}
 		return newCartItemDtos;
-    }
-
-	@PutMapping
-	public CartItemDto updateCartItem(@AuthenticationPrincipal CustomUserDetails currentUser,
-									@RequestBody CartItemDto cartItemDto) {
-		User user = userService.validateAndGetUserByUsername(currentUser.getUsername());
-		CartItem cartItem = cartItemMapper.toUpdateQuantityCartItem(cartItemDto);
-		if (cartItem.getCart().getId() != user.getId()) {
-			return null;
-		}
-    	return cartItemMapper.toCartItemDto(cartItemService.saveCartItem(cartItem));
     }
 	
 	@DeleteMapping("/{id}")

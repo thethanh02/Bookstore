@@ -50,6 +50,12 @@ const Login = () => {
                             setCartItems(response.data.cart.cartItems)
                         } else if (cartItems.length > 0) {
                             storeApi.addListCartItem(user, cartItems)
+                                .then(res => {
+                                    setCartItems(res.data);
+                                })
+                                .catch((error) => {
+                                    handleLogError(error);
+                                })
                         }
                     })
 

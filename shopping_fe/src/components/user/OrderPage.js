@@ -21,7 +21,7 @@ const OrderPage = () => {
             .catch(error => {
                 handleLogError(error)
             })
-    }, [orders?.status])
+    }, [])
 
     if (!isUser) {
         return <Navigate to='/' />
@@ -33,6 +33,14 @@ const OrderPage = () => {
         if (order.status === 'Đang xác nhận') {
             const orderStatusReq = {id: order.id, status: 'Đã hủy đơn'}
             await storeApi.updateOrderStatus(user, orderStatusReq)
+
+            setOrders(orders => {
+                return orders.map(o => o.id !== order.id ? o : {
+                    ...order,
+                    canceledAt: moment(new Date()).format('HH:mm DD/MM/YYYY'),
+                    status: 'Đã hủy đơn'
+                } )
+            })
         }
     }
 
@@ -66,10 +74,10 @@ const OrderPage = () => {
                     <Table.Cell>{order.status}</Table.Cell>
                     <Table.Cell>
                         <List bulleted>
-                            {order.createdAt !== null && <List.Item>Đặt lúc: {moment(order.createdAt).format('HH:mm:ss DD/MM/YYYY')}</List.Item>}
-                            {order.confirmedAt !== null && <List.Item>Xác nhận lúc: {moment(order.confirmedAt).format('HH:mm:ss DD/MM/YYYY')}</List.Item>}
-                            {order.deliveredAt !== null && <List.Item>Đã giao lúc: {moment(order.deliveredAt).format('HH:mm:ss DD/MM/YYYY')}</List.Item>}
-                            {order.canceledAt !== null && <List.Item>Hủy lúc: {moment(order.canceledAt).format('HH:mm:ss DD/MM/YYYY')}</List.Item>}
+                            {order.createdAt !== null && <List.Item>Đặt lúc: {moment(order.createdAt).format('HH:mm DD/MM/YYYY')}</List.Item>}
+                            {order.confirmedAt !== null && <List.Item>Xác nhận lúc: {moment(order.confirmedAt).format('HH:mm DD/MM/YYYY')}</List.Item>}
+                            {order.deliveredAt !== null && <List.Item>Đã giao lúc: {moment(order.deliveredAt).format('HH:mm DD/MM/YYYY')}</List.Item>}
+                            {order.canceledAt !== null && <List.Item>Hủy lúc: {moment(order.canceledAt).format('HH:mm DD/MM/YYYY')}</List.Item>}
                         </List>
                     </Table.Cell>
                     <Table.Cell>

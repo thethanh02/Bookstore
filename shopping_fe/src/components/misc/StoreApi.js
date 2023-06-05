@@ -16,7 +16,6 @@ export const storeApi = {
     updateBook,
     createReview,
     addCartItem,
-    updateCartItem,
     deleteCartItem,
     addListCartItem,
     addOrder,
@@ -96,13 +95,7 @@ function createReview(user, review, bookId) {
 }
 
 function addCartItem(user, cartItem) {
-    return instance.post(`/api/cartitem/new`, cartItem, {
-        headers: { 'Authorization': bearerAuth(user) }
-    })
-}
-
-function updateCartItem(user, cartItem) {
-    return instance.put(`/api/cartitem`, cartItem, {
+    return instance.post(`/api/cartitem`, cartItem, {
         headers: { 'Authorization': bearerAuth(user) }
     })
 }

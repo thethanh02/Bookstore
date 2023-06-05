@@ -15,17 +15,6 @@ export function ShoppingCartProvider({ children }) {
     const [isOpen, setIsOpen] = useState(false);
     const [cartItems, setCartItems] = useLocalStorage("shopping-cart", []);
     const { userIsAuthenticated, getUser } = useAuth()
-    useEffect(() => {
-        if (userIsAuthenticated()) {
-            storeApi.getUserMe(getUser())
-                .then(response => {
-                    setCartItems(response.data.cart.cartItems)
-                })
-                .catch(error => {
-                    handleLogError(error)
-                })
-        }
-    }, [])
 
     const cartQuantity = cartItems.reduce(
         (quantity, item) => item.quantity + quantity, 0);
@@ -50,30 +39,38 @@ export function ShoppingCartProvider({ children }) {
         setCartItems([]);
     }
 
-    function setItemQuantity(book, amount) {
-        let items
-        if (cartItems.find(item => item.book.id === book.id) == null) {
-            items = [...cartItems, { book, quantity: amount }];
-            if (userIsAuthenticated()) {
-                storeApi.addCartItem(getUser(), { book, quantity: amount })
-            }
+    // addToCart
+    function addToCart(book, amount) {
+        // Đăng nhập rồi thì gọi api
+        // CartAPI: [CRUD] Thêm list, Thêm 1, 
+        if (userIsAuthenticated()) {
+            storeApi.addCartItem(getUser(), { book, quantity: amount })
+                .then(res => {
+                    setCartItems(res.data)
+                })
+                .catch(error => {
+                    handleLogError(error)
+                })
         } else {
-            items = cartItems.map(item => {
-                if (item.book.id === book.id) {
-                    if (item.quantity > 0) {
-                        if (userIsAuthenticated()) {
-                            storeApi.updateCartItem(getUser(), { ...item, quantity: item.quantity + amount })
+        // Chưa đăng nhập
+            let items
+            if (cartItems.find(item => item.book.id === book.id) == null) {
+                items = [...cartItems, { book, quantity: amount }];
+            } else {
+                items = cartItems.map(item => {
+                    if (item.book.id === book.id) {
+                        if (item.quantity > 0) {
+                            return { ...item, quantity: item.quantity + amount };
+                        } else {
+                            return { ...item, quantity: amount };
                         }
-                        return { ...item, quantity: item.quantity + amount };
                     } else {
-                        return { ...item, quantity: amount };
+                        return item;
                     }
-                } else {
-                    return item;
-                }
-            });
+                });
+            }
+            setCartItems(items);
         }
-        setCartItems(items);
     }
 
     return (
@@ -81,7 +78,7 @@ export function ShoppingCartProvider({ children }) {
             getItemQuantity,
             removeFromCart,
             removeAllFromCart,
-            setItemQuantity,
+            addToCart,
             openCart,
             closeCart,
             cartItems,

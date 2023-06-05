@@ -29,7 +29,7 @@ const ItemDetail = () => {
     const [book, setBook] = useState(initialFormState);
     const { id } = useParams();
     const [amount, setAmount] = useState(1);
-    const { setItemQuantity } = useShoppingCart();
+    const { addToCart } = useShoppingCart();
     const [reviewsVal, setReviewsVal] = useState(null);
     const [commentString1, setCommentString1] = useState('');
     const [ratingValue, setRatingValue] = useState(0);
@@ -170,7 +170,7 @@ const ItemDetail = () => {
                                                 </Button.Group>
                                             </Grid.Column>
                                         </Grid>
-                                        <Button icon labelPosition='right' color='blue' onClick={() => { setItemQuantity(book, amount) }} >
+                                        <Button icon labelPosition='right' color='blue' onClick={() => { addToCart(book, amount) }} >
                                             Thêm vào giỏ<Icon name='cart plus' />
                                         </Button>
                                         <Button icon labelPosition='right' color='red'>
