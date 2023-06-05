@@ -48,17 +48,37 @@ public class CartItemController {
 	@PutMapping
 	public CartItemDto updateCartItem(@AuthenticationPrincipal CustomUserDetails currentUser,
 									@RequestBody CartItemDto cartItemDto) {
-//		User user = userService.validateAndGetUserByUsername(currentUser.getUsername());
+		User user = userService.validateAndGetUserByUsername(currentUser.getUsername());
 		CartItem cartItem = cartItemMapper.toUpdateQuantityCartItem(cartItemDto);
+		if (cartItem.getCart().getId() != user.getId()) {
+			return null;
+		}
     	return cartItemMapper.toCartItemDto(cartItemService.saveCartItem(cartItem));
     }
 	
 	@DeleteMapping("/{id}")
-	public CartItemDto updateCartItem(@AuthenticationPrincipal CustomUserDetails currentUser,
+	public CartItemDto deleteCartItem(@AuthenticationPrincipal CustomUserDetails currentUser,
 									@PathVariable String id) {
-//		User user = userService.validateAndGetUserByUsername(currentUser.getUsername());
+		User user = userService.validateAndGetUserByUsername(currentUser.getUsername());
 		CartItem cartItem = cartItemService.validateAndGetCartItemById(Long.parseLong(id));
+		if (cartItem.getCart().getId() != user.getId()) {
+			return null;
+		}
 		cartItemService.deleteCartItem(cartItem);
     	return cartItemMapper.toCartItemDto(cartItem);
+	}
+	
+	@DeleteMapping("/all")
+	public List<CartItemDto> deleteAllCartItem(@AuthenticationPrincipal CustomUserDetails currentUser) {
+		User user = userService.validateAndGetUserByUsername(currentUser.getUsername());
+//		List<CartItem> myCartItems = user.getCart().getCartItems();
+//		List<CartItemDto> newCartItemDtos = new ArrayList<>();
+//		myCartItems.forEach(cartItem -> {
+//			newCartItemDtos.add(cartItemMapper.toCartItemDto(cartItem));
+//			cartItemService.deleteCartItem(cartItem);
+//		});
+		cartItemService.deleteAllCartItem(user.getCart().getCartItems());
+		return null;
+//    	return newCartItemDtos;
 	}
 }

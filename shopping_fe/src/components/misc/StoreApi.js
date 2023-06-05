@@ -18,7 +18,11 @@ export const storeApi = {
     addCartItem,
     updateCartItem,
     deleteCartItem,
-    addListCartItem
+    addListCartItem,
+    addOrder,
+    getMyOrders,
+    getOrder,
+    updateOrderStatus
 }
 
 function authenticate(username, password) {
@@ -111,6 +115,30 @@ function deleteCartItem(user, cartItemId) {
 
 function addListCartItem(user, cartItems) {
     return instance.post(`/api/cartitem/newlist`, cartItems, {
+        headers: { 'Authorization': bearerAuth(user) }
+    })
+}
+
+function addOrder(user, order) {
+    return instance.post(`/api/orders/new`, order, {
+        headers: { 'Authorization': bearerAuth(user) }
+    })
+}
+
+function getMyOrders(user) {
+    return instance.get(`/api/orders/me`, {
+        headers: { 'Authorization': bearerAuth(user) }
+    })
+}
+
+function getOrder(user, id) {
+    return instance.get(`/api/orders/${id}`, {
+        headers: { 'Authorization': bearerAuth(user) }
+    })
+}
+
+function updateOrderStatus(user, orderStatusReq) {
+    return instance.put(`/api/orders`, orderStatusReq, {
         headers: { 'Authorization': bearerAuth(user) }
     })
 }

@@ -28,7 +28,9 @@ public class OrderMapperImpl implements OrderMapper {
 		if (order == null)
 			return null;
 		List<OrderDto.OrderItemDto> orderItems = order.getOrderItems().stream().map(this::toOrderDtoOrderItemDto).toList();
-		return new OrderDto(order.getId(), order.getName(), order.getPhoneNum(), order.getAddress(), order.getPaymentMethod(), orderItems);
+		return new OrderDto(order.getId(), order.getName(), order.getPhoneNum(), 
+				order.getAddress(), order.getPaymentMethod(), orderItems, order.getStatus(),
+				order.getCreatedAt(), order.getConfirmedAt(), order.getDeliveredAt(), order.getCanceledAt());
 	}
 	
 	private OrderDto.OrderItemDto toOrderDtoOrderItemDto(OrderItem orderItem) {

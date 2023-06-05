@@ -1,5 +1,6 @@
 package com.shopping.model;
 
+import java.time.ZonedDateTime;
 import java.util.*;
 
 import jakarta.persistence.*;
@@ -28,6 +29,12 @@ public class Order {
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
+	private String status;
+	private ZonedDateTime createdAt;
+	private ZonedDateTime confirmedAt;
+	private ZonedDateTime deliveredAt;
+	private ZonedDateTime canceledAt;
+	
 	public Order(String name, String phoneNum, String address, String paymentMethod) {
 		super();
 		this.name = name;

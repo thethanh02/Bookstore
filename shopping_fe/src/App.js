@@ -12,6 +12,8 @@ import BookEdit from './components/admin/BookEdit'
 import ItemDetail from './components/common/ItemDetail'
 import { ShoppingCartProvider } from './components/context/ShoppingCartContext'
 import Checkout from './components/common/Checkout'
+import OrderPage from './components/user/OrderPage'
+import OrderDetail from './components/user/OrderDetail'
 
 function App() {
     return (
@@ -25,6 +27,8 @@ function App() {
                             <Route path='/login' element={<Login />} />
                             <Route path='/signup' element={<Signup />} />
                             <Route path="/adminpage" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
+                            <Route path="/orders/me" element={<PrivateRoute><OrderPage /></PrivateRoute>} />
+                            <Route path="/orders/:id" element={<PrivateRoute><OrderDetail /></PrivateRoute>} />
                             <Route path="/books" element={<PrivateRoute><BookPage /></PrivateRoute>} />
                             <Route path="/books/:id" element={<PrivateRoute><BookEdit /></PrivateRoute>} />
                             <Route path="*" element={<Navigate to="/" />} />

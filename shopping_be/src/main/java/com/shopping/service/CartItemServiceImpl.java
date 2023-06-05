@@ -1,5 +1,7 @@
 package com.shopping.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.shopping.exception.EntityNotFoundException;
@@ -27,6 +29,11 @@ public class CartItemServiceImpl implements CartItemService {
 	@Override
 	public void deleteCartItem(CartItem cartItem) {
 		cartItemRepository.delete(cartItem);
+	}
+
+	@Override
+	public void deleteAllCartItem(List<CartItem> cartItems) {
+		cartItemRepository.deleteAll(cartItems);
 	}
 
 }

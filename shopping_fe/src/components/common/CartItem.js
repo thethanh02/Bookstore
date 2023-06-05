@@ -27,7 +27,7 @@ export function CartItem({ book, quantity, isDeleteBtnActive }) {
                 </div>
             </div>
             <div> {formatCurrency(book.price * quantity)}</div>
-            {isDeleteBtnActive && <Button variant="outline-danger" size="sm" onClick={() => removeFromCart(book)}>&times;</Button>}
+            {isDeleteBtnActive && <Button variant="outline-danger" size="sm" onClick={() => { if(isDeleteBtnActive) removeFromCart(book)}}>&times;</Button>}
         </Stack >
     )
 }

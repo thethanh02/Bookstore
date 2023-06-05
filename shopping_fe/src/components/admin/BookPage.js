@@ -57,7 +57,7 @@ const BookPage = () => {
         let bookList
         if (books.length === 0) {
             bookList = (
-                <Table.Row key='no-order'>
+                <Table.Row key='no-book'>
                     <Table.Cell collapsing textAlign='center' colSpan='5'>No book</Table.Cell>
                 </Table.Row>
             )
@@ -139,7 +139,7 @@ const BookPage = () => {
         let bookList
         if (books.length === 0) {
             bookList = (
-                <Table.Row key='no-order'>
+                <Table.Row key='no-book'>
                     <Table.Cell collapsing textAlign='center' colSpan='5'>No book</Table.Cell>
                 </Table.Row>
             )

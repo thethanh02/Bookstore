@@ -36,6 +36,7 @@ const AuthProvider = ({ children }) => {
 
     const userLogout = () => {
         localStorage.removeItem('user')
+        localStorage.removeItem('shopping-cart')
         setUser(null)
     }
 

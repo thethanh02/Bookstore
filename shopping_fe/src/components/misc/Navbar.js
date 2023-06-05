@@ -6,11 +6,11 @@ import { useShoppingCart } from '../context/ShoppingCartContext'
 
 const Navbar = () => {
     const { getUser, userIsAuthenticated, userLogout } = useAuth()
-    const { removeAllFromCart } = useShoppingCart()
 
-    const logout = () => {
-        userLogout()
-        removeAllFromCart()
+    const logout = async (event) => {
+        event.preventDefault();
+        await userLogout()
+        window.location.href = '/login'
     }
 
     const enterMenuStyle = () => {
@@ -26,10 +26,10 @@ const Navbar = () => {
         return user && user.data.rol[0] === 'ADMIN' ? { "display": "block" } : { "display": "none" }
     }
 
-    // const userPageStyle = () => {
-    //     const user = getUser()
-    //     return user && user.data.rol[0] === 'USER' ? { "display": "block" } : { "display": "none" }
-    // }
+    const userPageStyle = () => {
+        const user = getUser()
+        return user && user.data.rol[0] === 'USER' ? { "display": "block" } : { "display": "none" }
+    }
 
     const getUserName = () => {
         const user = getUser()
@@ -56,6 +56,7 @@ const Navbar = () => {
                         />
                     </Menu.Item>
                     <Menu.Item as={Link} to="/adminpage" style={adminPageStyle()} name='adminpage' active={activeItem === 'adminpage'} onClick={handleItemClick} />
+                    <Menu.Item as={Link} to="/orders/me" style={userPageStyle()} name='order' active={activeItem === 'order'} onClick={handleItemClick} />
                     <Menu.Item as={Link} to="/books" style={adminPageStyle()} name='books' active={activeItem === 'books'} onClick={handleItemClick} />
                     <Menu.Menu position='right'>
                         <Menu.Item>
@@ -82,7 +83,7 @@ const Navbar = () => {
                         <Menu.Item as={Link} to="/login" style={enterMenuStyle()} name='login' active={activeItem === 'login'} onClick={handleItemClick}>Đăng nhập</Menu.Item>
                         <Menu.Item as={Link} to="/signup" style={enterMenuStyle()} name='signup' active={activeItem === 'signup'} onClick={handleItemClick}>Đăng ký</Menu.Item>
                         <Menu.Item header style={logoutMenuStyle()} name={`Hi ${getUserName()}`} />
-                        <Menu.Item as={Link} to="/" style={logoutMenuStyle()} name='logout' onClick={logout}>Đăng xuất</Menu.Item>
+                        <Menu.Item style={logoutMenuStyle()} name='logout' onClick={logout}>Đăng xuất</Menu.Item>
                     </Menu.Menu>
                 </Container>
             </Menu>
