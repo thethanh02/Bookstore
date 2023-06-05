@@ -28,18 +28,23 @@ public class CartItemController {
 									@RequestBody CartItemDto cartItemDto) {
 		User user = userService.validateAndGetUserByUsername(currentUser.getUsername());
 		CartItem cartItem = cartItemService.validateAndGetCartItemByBookId(user.getCart().getCartItems(), cartItemDto.book().id());
-		List<CartItemDto> newCartItemDtos = new ArrayList<>();
-		for (CartItem item : user.getCart().getCartItems()) {
-			newCartItemDtos.add(cartItemMapper.toCartItemDto(item));
-		}
+		
 		if (cartItem == null) {
 			cartItem = cartItemMapper.toNewCartItem(cartItemDto, user.getCart());
 			CartItem cartItem2 = cartItemService.saveCartItem(cartItem);
+			List<CartItemDto> newCartItemDtos = new ArrayList<>();
+			for (CartItem item : user.getCart().getCartItems()) {
+				newCartItemDtos.add(cartItemMapper.toCartItemDto(item));
+			}
 			newCartItemDtos.add(cartItemMapper.toCartItemDto(cartItem2));
 			return newCartItemDtos;
 		} else {
 			cartItem.setQuantity(cartItem.getQuantity() + cartItemDto.quantity());
 			cartItemService.saveCartItem(cartItem);
+			List<CartItemDto> newCartItemDtos = new ArrayList<>();
+			for (CartItem item : user.getCart().getCartItems()) {
+				newCartItemDtos.add(cartItemMapper.toCartItemDto(item));
+			}
 			return newCartItemDtos;
 		}
     }

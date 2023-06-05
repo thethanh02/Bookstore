@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Stack } from 'react-bootstrap';
-import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import { Breadcrumb, Form, Grid, Header, Segment } from 'semantic-ui-react';
 import { useAuth } from '../context/AuthContext';
 import { useShoppingCart } from '../context/ShoppingCartContext';
@@ -14,19 +14,15 @@ const OrderDetail = () => {
     const user = getUser()
     const isUser = (user.data.rol[0] === 'USER')
     const { cartItems } = useShoppingCart()
-    const categoryOptions = [
-        { key: 'Thanh toán tiền mặt', value: 'Thanh toán tiền mặt', text: 'Thanh toán tiền mặt' },
-    ]
 
     const initialFormState = {
         name: '',
         phoneNum: '',
         address: '',
         paymentMethod: '',
-        cartItems: cartItems,
+        orderItems: cartItems,
     };
     const [order, setOrder] = useState(initialFormState);
-    const navigate = useNavigate();
     const { id } = useParams();
 
     useEffect(() => {

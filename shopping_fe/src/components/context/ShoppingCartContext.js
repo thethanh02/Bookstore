@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { useLocalStorage } from './../utils/useLocalStorage';
 import { ShoppingCart } from '../common/ShoppingCart';
 import { useAuth } from './AuthContext';
@@ -47,6 +47,7 @@ export function ShoppingCartProvider({ children }) {
             storeApi.addCartItem(getUser(), { book, quantity: amount })
                 .then(res => {
                     setCartItems(res.data)
+                    console.log(res.data)
                 })
                 .catch(error => {
                     handleLogError(error)
