@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/books", "/api/books/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/comments/new").hasAnyAuthority(ADMIN, USER)
                 .requestMatchers("/api/cartitem", "/api/cartitem/**").hasAnyAuthority(ADMIN, USER)
+                .requestMatchers("/api/orders/all").hasAnyAuthority(ADMIN)
                 .requestMatchers("/api/orders", "/api/orders/**").hasAnyAuthority(ADMIN, USER)
                 .requestMatchers("/public/**", "/auth/**").permitAll()
                 .requestMatchers("/", "/error", "/csrf").permitAll()

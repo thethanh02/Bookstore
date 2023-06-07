@@ -1,5 +1,6 @@
 package com.shopping.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -29,6 +30,11 @@ public class OrderServiceImpl implements OrderService {
 	public Order validateAndGetOrderById(String id) {
 		return getOrderById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Order with id %s not found", id)));
+	}
+
+	@Override
+	public List<Order> getAllOrders() {
+		return orderRepository.findAll();
 	}
 
 }

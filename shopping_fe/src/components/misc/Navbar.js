@@ -55,9 +55,10 @@ const Navbar = () => {
                             alt="Bookstore Logo"
                         />
                     </Menu.Item>
-                    <Menu.Item as={Link} to="/adminpage" style={adminPageStyle()} name='adminpage' active={activeItem === 'adminpage'} onClick={handleItemClick} />
-                    <Menu.Item as={Link} to="/orders/me" style={userPageStyle()} name='order' active={activeItem === 'order'} onClick={handleItemClick} />
-                    <Menu.Item as={Link} to="/books" style={adminPageStyle()} name='books' active={activeItem === 'books'} onClick={handleItemClick} />
+                    <Menu.Item as={Link} to="/admin/users" style={adminPageStyle()} name='users' active={activeItem === 'users'} onClick={handleItemClick} />
+                    <Menu.Item as={Link} to="/orders/me" style={userPageStyle()} name='orders' active={activeItem === 'orders'} onClick={handleItemClick} />
+                    <Menu.Item as={Link} to="/admin/books" style={adminPageStyle()} name='books' active={activeItem === 'books'} onClick={handleItemClick} />
+                    <Menu.Item as={Link} to="/admin/orders" style={adminPageStyle()} name='orders' active={activeItem === 'orders'} onClick={handleItemClick} />
                     <Menu.Menu position='right'>
                         <Menu.Item>
                             <Button icon circular onClick={openCart} style={{ 'padding': '0' }} >

@@ -14,7 +14,7 @@ const OrderManagerPage = () => {
     const [orders, setOrders] = useState(null)
 
     useEffect(() => {
-        storeApi.getOrders(user)
+        storeApi.getAllOrders(user)
             .then(response => {
                 setOrders(response.data)
             })
@@ -43,6 +43,38 @@ const OrderManagerPage = () => {
             })
         }
     }
+    const handelConfirmOrder = async (event, order) => {
+        event.preventDefault();
+
+        if (order.status === 'Đang xác nhận') {
+            const orderStatusReq = {id: order.id, status: 'Đang giao hàng'}
+            await storeApi.updateOrderStatus(user, orderStatusReq)
+
+            setOrders(orders => {
+                return orders.map(o => o.id !== order.id ? o : {
+                    ...order,
+                    confirmedAt: moment(new Date()).format('HH:mm DD/MM/YYYY'),
+                    status: 'Đang giao hàng'
+                } )
+            })
+        }
+    }
+    const handleDeliveredOrder = async (event, order) => {
+        event.preventDefault();
+
+        if (order.status === 'Đang giao hàng') {
+            const orderStatusReq = {id: order.id, status: 'Đã giao hàng'}
+            await storeApi.updateOrderStatus(user, orderStatusReq)
+
+            setOrders(orders => {
+                return orders.map(o => o.id !== order.id ? o : {
+                    ...order,
+                    deliveredAt: moment(new Date()).format('HH:mm DD/MM/YYYY'),
+                    status: 'Đã giao hàng'
+                } )
+            })
+        }
+    }
 
     let orderList
     if (orders === null || orders.length === 0) {
@@ -56,6 +88,7 @@ const OrderManagerPage = () => {
             return (
                 <Table.Row key={order.id}>
                     <Table.Cell>{order.id}</Table.Cell>
+                    <Table.Cell>{order.user.name}</Table.Cell>
                     <Table.Cell>
                         <List bulleted>
                             {order.orderItems.map(orderItem => {
@@ -92,6 +125,24 @@ const OrderManagerPage = () => {
                             </Button>
                             <Button
                                 fluid
+                                color='blue'
+                                size='small'
+                                disabled={order.status !== 'Đang xác nhận'}
+                                onClick={(event) => handelConfirmOrder(event, order)}
+                            >
+                                Xác nhận đơn
+                            </Button>
+                            <Button
+                                fluid
+                                color='blue'
+                                size='small'
+                                disabled={order.status !== 'Đang giao hàng'}
+                                onClick={(event) => handleDeliveredOrder(event, order)}
+                            >
+                                Xác nhận đã giao
+                            </Button>
+                            <Button
+                                fluid
                                 color='red'
                                 size='small'
                                 disabled={order.status !== 'Đang xác nhận'}
@@ -113,11 +164,12 @@ const OrderManagerPage = () => {
                     <Table.Header style={{ position: 'sticky', top: 0, zIndex: 1 }}>
                         <Table.Row>
                             <Table.HeaderCell width={1}>ID</Table.HeaderCell>
+                            <Table.HeaderCell width={1}>Tên KH</Table.HeaderCell>
                             <Table.HeaderCell width={4}>Sách</Table.HeaderCell>
                             <Table.HeaderCell width={1}>Tổng tiền</Table.HeaderCell>
                             <Table.HeaderCell width={1}>Trạng thái</Table.HeaderCell>
                             <Table.HeaderCell width={3}>Khung thời gian</Table.HeaderCell>
-                            <Table.HeaderCell width={1}></Table.HeaderCell>
+                            <Table.HeaderCell width={2}></Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>

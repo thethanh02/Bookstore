@@ -3,27 +3,30 @@ import { config } from '../../Constants'
 import { parseJwt } from '../utils/Helpers'
 
 export const storeApi = {
-    authenticate,
+    authenticate,       // auth api
     signup,
     numberOfUsers,
     getUsers,
     deleteUser,
     getUserMe,
-    getBooks,
+    getBooks,           // book api
     deleteBook,
     getBook,
     createBook,
     updateBook,
-    createReview,
-    addCartItem,
+    createReview,       // review api
+    addCartItem,        // cart item api
     deleteCartItem,
     addListCartItem,
-    addOrder,
+    deleteListCartItemsByUser,
+    addOrder,           // oder api
     getMyOrders,
     getOrder,
-    updateOrderStatus
+    updateOrderStatus,
+    getAllOrders
 }
 
+// auth api
 function authenticate(username, password) {
     return instance.post('/auth/authenticate', { username, password }, {
         headers: { 'Content-type': 'application/json' }
@@ -59,6 +62,7 @@ function getUserMe(user) {
     })
 }
 
+// book api
 function getBooks() {
     return instance.get('/api/books')
 }
@@ -87,6 +91,7 @@ function updateBook(user, bookId, book) {
     })
 }
 
+// review api
 function createReview(user, review, bookId) {
     const url = `/api/reviews/new/${bookId}`
     return instance.post(url, review, {
@@ -94,6 +99,7 @@ function createReview(user, review, bookId) {
     })
 }
 
+// cart item api
 function addCartItem(user, cartItem) {
     return instance.post(`/api/cartitem`, cartItem, {
         headers: { 'Authorization': bearerAuth(user) }
@@ -112,6 +118,13 @@ function addListCartItem(user, cartItems) {
     })
 }
 
+function deleteListCartItemsByUser(user) {
+    return instance.delete(`/api/cartitem/all`, {
+        headers: { 'Authorization': bearerAuth(user) }
+    })
+}
+
+// order api
 function addOrder(user, order) {
     return instance.post(`/api/orders/new`, order, {
         headers: { 'Authorization': bearerAuth(user) }
@@ -132,6 +145,12 @@ function getOrder(user, id) {
 
 function updateOrderStatus(user, orderStatusReq) {
     return instance.put(`/api/orders`, orderStatusReq, {
+        headers: { 'Authorization': bearerAuth(user) }
+    })
+}
+
+function getAllOrders(user) {
+    return instance.get(`/api/orders/all`, {
         headers: { 'Authorization': bearerAuth(user) }
     })
 }

@@ -51,8 +51,10 @@ public class OrderController {
 	public OrderDto getOrder(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable String id) {
 		User user = userService.validateAndGetUserByUsername(currentUser.getUsername());
 		Order order = orderService.validateAndGetOrderById(id);
-		if (!order.getUser().getUsername().equals(user.getUsername())) {
-			return null;
+		if (user.getRole().equals("USER")) {
+			if (!order.getUser().getUsername().equals(user.getUsername())) {
+				return null;
+			}
 		}
     	return orderMapper.toOrderDto(order);
     }
@@ -61,17 +63,35 @@ public class OrderController {
 	public OrderDto setOrderStatus(@AuthenticationPrincipal CustomUserDetails currentUser, @RequestBody OrderStatusRequest orderStatusRequest) {
 		User user = userService.validateAndGetUserByUsername(currentUser.getUsername());
 		Order order = orderService.validateAndGetOrderById(orderStatusRequest.getId().toString());
-		if (!order.getUser().getUsername().equals(user.getUsername())) {
-			return null;
-		}
 		if (order.getStatus().equals("Đang xác nhận") && orderStatusRequest.getStatus().equals("Đã hủy đơn")) {
+			if (user.getRole().equals("USER")) {
+				if (!order.getUser().getUsername().equals(user.getUsername())) {
+					return null; // 401
+				}
+			}
 			order.setCanceledAt(ZonedDateTime.now());
-			order.setStatus(orderStatusRequest.getStatus());
+		} else if (order.getStatus().equals("Đang xác nhận") && orderStatusRequest.getStatus().equals("Đang giao hàng")) {
+			if (user.getRole().equals("USER")) {
+				return null; // 401
+			}
+			order.setConfirmedAt(ZonedDateTime.now());
+		} else if (order.getStatus().equals("Đang giao hàng") && orderStatusRequest.getStatus().equals("Đã giao hàng")) {
+			if (user.getRole().equals("USER")) {
+				return null; // 401
+			}
+			order.setDeliveredAt(ZonedDateTime.now());
 		} else {
-			return null;
+			return null; // bad request
 		}
+		order.setStatus(orderStatusRequest.getStatus());
 		orderService.saveOrder(order);
     	return orderMapper.toOrderDto(order);
+    }
+	
+	@GetMapping("/all")
+	public List<OrderDto> getAllOrders() {
+		List<OrderDto> result = orderService.getAllOrders().stream().map(orderMapper::toOrderDto).toList();
+    	return result;
     }
 	
 }

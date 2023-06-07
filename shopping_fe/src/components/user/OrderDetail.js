@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Stack } from 'react-bootstrap';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Breadcrumb, Form, Grid, Header, Segment } from 'semantic-ui-react';
 import { useAuth } from '../context/AuthContext';
 import { useShoppingCart } from '../context/ShoppingCartContext';
@@ -12,7 +12,6 @@ import { CartItem } from '../common/CartItem';
 const OrderDetail = () => {
     const { getUser } = useAuth()
     const user = getUser()
-    const isUser = (user.data.rol[0] === 'USER')
     const { cartItems } = useShoppingCart()
 
     const initialFormState = {
@@ -35,9 +34,6 @@ const OrderDetail = () => {
             })
     }, [])
 
-    if (!isUser) {
-        return <Navigate to='/' />
-    }
     return (
         <Container>
             <Segment style={{ marginTop: '30px' }}>

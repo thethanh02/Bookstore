@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Container, Stack } from 'react-bootstrap';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Breadcrumb, Form, Grid, Header, Segment } from 'semantic-ui-react';
@@ -6,14 +6,13 @@ import { useAuth } from '../context/AuthContext';
 import { CartItem } from './CartItem';
 import { useShoppingCart } from '../context/ShoppingCartContext';
 import { formatCurrency } from '../utils/formatCurrency';
-import { handleLogError } from '../utils/Helpers';
 import { storeApi } from '../misc/StoreApi';
 
 const Checkout = () => {
     const { getUser } = useAuth()
     const user = getUser()
     const isUser = (user.data.rol[0] === 'USER')
-    const { cartItems } = useShoppingCart()
+    const { cartItems, removeAllFromCart } = useShoppingCart()
     const categoryOptions = [
         { key: 'Thanh toán tiền mặt', value: 'Thanh toán tiền mặt', text: 'Thanh toán tiền mặt' },
     ]
@@ -35,10 +34,12 @@ const Checkout = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         await storeApi.addOrder(user, order)
+        removeAllFromCart()
+        await storeApi.deleteListCartItemsByUser(user)
         navigate('/orders/me');
     }
     
-    if (!isUser) {
+    if (!isUser || cartItems === null || cartItems.length < 1) {
         return <Navigate to='/' />
     }
     return (
@@ -57,10 +58,7 @@ const Checkout = () => {
                                 <Grid.Row>
                                     <Grid.Column width={8}>
                                         <Form.Input fluid className='required' label='Họ tên' name='name' placeholder='Họ tên' value={order.name} onChange={handleChange} />
-                                        <Form.Group widths='equal'>
-                                            <Form.Input fluid className='required' label='Email' name='email' placeholder='Email' value={order.email} onChange={handleChange} />
-                                            <Form.Input fluid className='required' label='Điện thoại' name='phoneNum' placeholder='Điện thoại' value={order.phoneNum} onChange={handleChange} />
-                                        </Form.Group>
+                                        <Form.Input fluid className='required' label='Điện thoại' name='phoneNum' placeholder='Điện thoại' value={order.phoneNum} onChange={handleChange} />
                                         <Form.Input fluid className='required' label='Địa chỉ' name='address' placeholder='Địa chỉ' value={order.address} onChange={handleChange} />
                                         <Form.Select
                                             fluid

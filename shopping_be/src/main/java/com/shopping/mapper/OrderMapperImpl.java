@@ -8,6 +8,7 @@ import com.shopping.controller.payload.OrderDto;
 import com.shopping.controller.payload.OrderRequest;
 import com.shopping.model.Order;
 import com.shopping.model.OrderItem;
+import com.shopping.model.User;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,8 +29,9 @@ public class OrderMapperImpl implements OrderMapper {
 		if (order == null)
 			return null;
 		List<OrderDto.OrderItemDto> orderItems = order.getOrderItems().stream().map(this::toOrderDtoOrderItemDto).toList();
+		OrderDto.UserDto user = toOrderDtoUserDto(order.getUser());
 		return new OrderDto(order.getId(), order.getName(), order.getPhoneNum(), 
-				order.getAddress(), order.getPaymentMethod(), orderItems, order.getStatus(),
+				order.getAddress(), order.getPaymentMethod(), orderItems, user, order.getStatus(),
 				order.getCreatedAt(), order.getConfirmedAt(), order.getDeliveredAt(), order.getCanceledAt());
 	}
 	
@@ -37,5 +39,11 @@ public class OrderMapperImpl implements OrderMapper {
 		if (orderItem == null)
 			return null;
 		return new OrderDto.OrderItemDto(orderItem.getId(), orderItem.getQuantity(), bookMapper.toBookDto(orderItem.getBook()));
+	}
+	
+	private OrderDto.UserDto toOrderDtoUserDto(User user) {
+		if (user == null)
+			return null;
+		return new OrderDto.UserDto(user.getUsername(), user.getName());
 	}
 }
