@@ -1,13 +1,16 @@
 package com.shopping.service;
 
-import java.util.List;
+import java.util.*;
 
 import org.springframework.stereotype.Service;
 
 import com.shopping.exception.EntityNotFoundException;
-import com.shopping.model.CartItem;
+import com.shopping.model.*;
 import com.shopping.repository.CartItemRepository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -15,6 +18,9 @@ import lombok.RequiredArgsConstructor;
 public class CartItemServiceImpl implements CartItemService {
 	private final CartItemRepository cartItemRepository;
 
+	@PersistenceContext
+	private EntityManager entityManager;
+	
 	@Override
 	public CartItem validateAndGetCartItemById(Long id) {
 		return cartItemRepository.findById(id)
@@ -32,8 +38,11 @@ public class CartItemServiceImpl implements CartItemService {
 	}
 
 	@Override
-	public void deleteAllCartItem(List<CartItem> cartItems) {
-		cartItemRepository.deleteAll(cartItems);
+	@Transactional
+	public void deleteAllCartItemsByUser(User user) {
+		entityManager.createQuery("DELETE FROM CartItem c WHERE c.user = :user")
+	        .setParameter("user", user)
+	        .executeUpdate();
 	}
 
 	@Override
@@ -44,5 +53,5 @@ public class CartItemServiceImpl implements CartItemService {
 		}
 		return null;
 	}
-
+	
 }

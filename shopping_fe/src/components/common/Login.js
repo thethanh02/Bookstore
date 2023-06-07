@@ -46,8 +46,8 @@ const Login = () => {
 
                 storeApi.getUserMe(user)
                     .then(response => {
-                        if (response.data.cart.cartItems.length > 0) {
-                            setCartItems(response.data.cart.cartItems)
+                        if (response.data.cartItems.length > 0) {
+                            setCartItems(response.data.cartItems)
                         } else if (cartItems.length > 0) {
                             storeApi.addListCartItem(user, cartItems)
                                 .then(res => {

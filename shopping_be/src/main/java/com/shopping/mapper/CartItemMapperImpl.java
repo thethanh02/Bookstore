@@ -17,11 +17,11 @@ public class CartItemMapperImpl implements CartItemMapper {
 	private final BookMapper bookMapper;
 	
 	@Override
-	public CartItem toNewCartItem(CartItemDto cartItemDto, Cart cart) {
+	public CartItem toNewCartItem(CartItemDto cartItemDto, User user) {
 		if (cartItemDto == null)
 			return null;
 		Book book = bookService.validateAndGetBookById(cartItemDto.book().id().toString());
-		return new CartItem(cartItemDto.quantity(), cart, book);
+		return new CartItem(cartItemDto.quantity(), user, book);
 	}
 
 	@Override

@@ -22,18 +22,12 @@ public class UserMapperImpl implements UserMapper {
         if (user == null) {
             return null;
         }
-        return new UserDto(user.getId(), user.getUsername(), user.getName(), user.getEmail(), user.getRole(), toUserDtoCartDto(user.getCart()));
+        List<CartItemDto> cartItems = user.getCartItems().stream().map(this::toUserDtoCartItemDto).toList();
+        return new UserDto(user.getId(), user.getUsername(), user.getName(), user.getEmail(), user.getRole(), cartItems);
     }
     
-    private UserDto.CartDto toUserDtoCartDto(Cart cart) {
-        if (cart == null) {
-            return null;
-        }
-        List<CartItemDto> cartItems = cart.getCartItems().stream().map(this::toUserDtoCartDtoCartItemDto).toList();
-        return new UserDto.CartDto(cart.getId(), cartItems);
-    }
     
-    private CartItemDto toUserDtoCartDtoCartItemDto(CartItem cartItem) {
+    private CartItemDto toUserDtoCartItemDto(CartItem cartItem) {
         if (cartItem == null) {
             return null;
         }

@@ -16,16 +16,16 @@ public class CartItem {
 	private int quantity;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "cart_id")
-	private Cart cart;
+	@JoinColumn(name = "user_id")
+	private User user;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "book_id")
 	private Book book;	
 	
-	public CartItem(int quantity, Cart cart, Book book) {
+	public CartItem(int quantity, User user, Book book) {
 		this.quantity = quantity;
-		this.cart = cart;
+		this.user = user;
 		this.book = book;
 	}
 }

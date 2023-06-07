@@ -1,8 +1,8 @@
 package com.shopping.service;
 
-import java.util.List;
+import java.util.*;
 
-import com.shopping.model.CartItem;
+import com.shopping.model.*;
 
 public interface CartItemService {
 
@@ -12,7 +12,7 @@ public interface CartItemService {
 	
 	void deleteCartItem(CartItem cartItem);
 	
-	void deleteAllCartItem(List<CartItem> cartItems);
+	void deleteAllCartItemsByUser(User user);
 	
 	CartItem validateAndGetCartItemByBookId(List<CartItem> cartItems, Long id);
 	
