@@ -6,7 +6,6 @@ import Navbar from './components/misc/Navbar'
 import Store from './components/common/Store'
 import Login from './components/common/Login'
 import Signup from './components/common/Signup'
-import AdminPage from './components/admin/AdminPage'
 import BookPage from './components/admin/BookPage'
 import BookEdit from './components/admin/BookEdit'
 import ItemDetail from './components/common/ItemDetail'
@@ -15,6 +14,7 @@ import Checkout from './components/common/Checkout'
 import OrderPage from './components/user/OrderPage'
 import OrderDetail from './components/user/OrderDetail'
 import OrderManagerPage from './components/admin/OrderManagerPage'
+import UserManagerPage from './components/admin/UserManagerPage'
 
 function App() {
     return (
@@ -27,7 +27,7 @@ function App() {
                             <Route path='/products/:id' element={<ItemDetail />} />
                             <Route path='/login' element={<Login />} />
                             <Route path='/signup' element={<Signup />} />
-                            <Route path="/admin/users" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
+                            <Route path="/admin/users" element={<PrivateRoute><UserManagerPage /></PrivateRoute>} />
                             <Route path="/admin/orders" element={<PrivateRoute><OrderManagerPage /></PrivateRoute>} />
                             <Route path="/orders/me" element={<PrivateRoute><OrderPage /></PrivateRoute>} />
                             <Route path="/orders/:id" element={<PrivateRoute><OrderDetail /></PrivateRoute>} />

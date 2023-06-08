@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { storeApi } from '../misc/StoreApi';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { handleLogError } from '../utils/Helpers'
-import { Button, Container, Form, Grid, Header, Image, Label, Message } from 'semantic-ui-react';
+import { Button, Confirm, Container, Form, Grid, Header, Image, Label, Message } from 'semantic-ui-react';
 
 const BookEdit = () => {
     const { getUser } = useAuth()
@@ -37,6 +37,8 @@ const BookEdit = () => {
     const [titleError, setTitleError] = useState('');
     const [authorError, setAuthorError] = useState('');
     const [releaseDateError, setReleaseDateError] = useState('');
+
+    const [confirmOpen, setConfirmOpen] = useState(false)
 
     useEffect(() => {
         setIsAdmin(user.data.rol[0] === 'ADMIN')
@@ -82,8 +84,13 @@ const BookEdit = () => {
         setBook({ ...book, imgUrl: btoa(binaryString) })
     }
 
+    const handleOpenConfirm = () => {
+        setConfirmOpen(true);
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setConfirmOpen(false)
 
         setIsError(false);
         setErrorMessage('');
@@ -152,7 +159,7 @@ const BookEdit = () => {
         <div>
             <Container>
                 <Header as='h2' textAlign='center'>Sách</Header>
-                <Form onSubmit={handleSubmit}>
+                <Form onSubmit={() => handleOpenConfirm(book)}>
                     <Grid stackable>
                         <Grid.Row>
                             <Grid.Column width={8}>
@@ -234,6 +241,17 @@ const BookEdit = () => {
                     </Grid>
                 </Form>
             </Container>
+            <Confirm
+                open={confirmOpen}
+                header='Xác nhận'
+                content='Bạn có chắc muốn thêm không?'
+                cancelButton='No'
+                confirmButton='Yes'
+                onCancel={() => { setConfirmOpen(false) }}
+                onConfirm={handleSubmit}
+                size='mini'
+                style={{ 'height': '190px', 'position': 'fixed', 'top': '50%', 'left': '50%', 'transform': 'translate(-50%, -50%)' }}
+            />
         </div>
     )
 };
