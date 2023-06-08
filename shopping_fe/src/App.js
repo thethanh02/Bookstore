@@ -28,10 +28,10 @@ function App() {
                             <Route path='/login' element={<Login />} />
                             <Route path='/signup' element={<Signup />} />
                             <Route path="/admin/users" element={<PrivateRoute><UserManagerPage /></PrivateRoute>} />
+                            <Route path="/admin/books" element={<BookPage />} />
                             <Route path="/admin/orders" element={<PrivateRoute><OrderManagerPage /></PrivateRoute>} />
                             <Route path="/orders/me" element={<PrivateRoute><OrderPage /></PrivateRoute>} />
                             <Route path="/orders/:id" element={<PrivateRoute><OrderDetail /></PrivateRoute>} />
-                            <Route path="/admin/books" element={<PrivateRoute><BookPage /></PrivateRoute>} />
                             <Route path="/books/:id" element={<PrivateRoute><BookEdit /></PrivateRoute>} />
                             <Route path="*" element={<Navigate to="/" />} />
                         </Route>

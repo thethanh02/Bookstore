@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Navigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { Grid, Button, Table, Container, Icon, Image, Checkbox, Confirm } from 'semantic-ui-react'
 import { storeApi } from '../misc/StoreApi';
@@ -11,7 +10,7 @@ import moment from 'moment';
 const BookPage = () => {
     const { getUser } = useAuth()
     const user = getUser()
-    const isAdmin = (user.data.rol[0] === 'ADMIN')
+    const isAdmin = (user?.data.rol[0] === 'ADMIN')
     const [books, setBooks] = useState([])
     const [viewTable, setViewTable] = useState(false)
     const [confirmOpen, setConfirmOpen] = useState(false)
@@ -26,10 +25,6 @@ const BookPage = () => {
                 handleLogError(error)
             })
     }, [])
-
-    if (!isAdmin) {
-        return <Navigate to='/' />
-    }
 
     const handleOpenConfirm = (itemId) => {
         setConfirmOpen(true);
@@ -75,7 +70,7 @@ const BookPage = () => {
                         <Table.Cell>{book.category}</Table.Cell>
                         <Table.Cell>{book.sold}</Table.Cell>
                         <Table.Cell>{book.imgUrl !== '' && <Image src={book.imgUrl} size="tiny" rounded />}</Table.Cell>
-                        <Table.Cell collapsing>
+                        {isAdmin && <Table.Cell collapsing>
                             <Button
                                 circular
                                 color='green'
@@ -91,7 +86,7 @@ const BookPage = () => {
                                 icon='trash'
                                 onClick={() => handleOpenConfirm(book.id)}
                             />
-                        </Table.Cell>
+                        </Table.Cell>}
                     </Table.Row>
                 )
             })
@@ -100,9 +95,9 @@ const BookPage = () => {
         return (
             <Container>
                 <h2>Books</h2>
-                <Button primary icon labelPosition='right' as={Link} to={'/books/new'}>
+                {isAdmin && <Button primary icon labelPosition='right' as={Link} to={'/books/new'}>
                     Tạo mới<Icon name='add' />
-                </Button>
+                </Button>}
                 <Checkbox label='Other view' name='viewTable' id='viewTable' check={viewTable} onChange={onChangeViewTable} autoComplete='viewTable' />
                 <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
                     <Table compact striped selectable>
@@ -117,7 +112,7 @@ const BookPage = () => {
                                 <Table.HeaderCell width={1}>Thể loại</Table.HeaderCell>
                                 <Table.HeaderCell width={1}>Đã bán</Table.HeaderCell>
                                 <Table.HeaderCell width={1}>Bìa</Table.HeaderCell>
-                                <Table.HeaderCell width={1} />
+                                {isAdmin && <Table.HeaderCell width={1} />}
                             </Table.Row>
                         </Table.Header>
                         <Table.Body>
@@ -156,7 +151,7 @@ const BookPage = () => {
                             <Table.Cell>{book.title}</Table.Cell>
                             <Table.Cell rowSpan='3'>{book.description}</Table.Cell>
                             <Table.Cell>{book.releaseDate}</Table.Cell>
-                            <Table.Cell rowSpan='3' collapsing>
+                            {isAdmin && <Table.Cell rowSpan='3' collapsing>
                                 <Button
                                     circular
                                     color='green'
@@ -172,7 +167,7 @@ const BookPage = () => {
                                     icon='trash'
                                     onClick={() => handleOpenConfirm(book.id)}
                                 />
-                            </Table.Cell>
+                            </Table.Cell>}
                         </Table.Row>
                         <Table.Row key={book.id}>
                             <Table.Cell>{book.author}</Table.Cell>
@@ -190,9 +185,9 @@ const BookPage = () => {
         return (
             <Container>
                 <h2>Books</h2>
-                <Button primary icon labelPosition='right' as={Link} to={'/books/new'}>
+                {isAdmin && <Button primary icon labelPosition='right' as={Link} to={'/books/new'}>
                     Create<Icon name='add' />
-                </Button>
+                </Button>}
                 <Checkbox label='Other view' name='viewTable' id='viewTable' check={viewTable} onChange={onChangeViewTable} autoComplete='viewTable' />
 
                 <Grid stackable divided>
@@ -211,7 +206,7 @@ const BookPage = () => {
                             <Table.HeaderCell width={2}>Title</Table.HeaderCell>
                             <Table.HeaderCell rowSpan='3' width={4}>Description</Table.HeaderCell>
                             <Table.HeaderCell width={1}>Release Date</Table.HeaderCell>
-                            <Table.HeaderCell rowSpan='3' width={1} />
+                            {isAdmin && <Table.HeaderCell rowSpan='3' width={1} />}
                         </Table.Row>
                         <Table.Row>
                             <Table.HeaderCell>Author</Table.HeaderCell>
