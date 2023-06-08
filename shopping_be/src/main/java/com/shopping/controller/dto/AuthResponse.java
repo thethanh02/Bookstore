@@ -1,4 +1,4 @@
-package com.shopping.controller.payload;
+package com.shopping.controller.dto;
 
 public record AuthResponse(String accessToken) {
 }

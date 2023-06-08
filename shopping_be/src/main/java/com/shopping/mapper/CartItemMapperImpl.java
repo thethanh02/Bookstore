@@ -2,8 +2,8 @@ package com.shopping.mapper;
 
 import org.springframework.stereotype.Service;
 
-import com.shopping.controller.payload.BookDto;
-import com.shopping.controller.payload.CartItemDto;
+import com.shopping.controller.dto.BookDto;
+import com.shopping.controller.dto.CartItemDto;
 import com.shopping.model.*;
 import com.shopping.service.*;
 

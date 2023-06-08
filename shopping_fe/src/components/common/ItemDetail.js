@@ -44,7 +44,7 @@ const ItemDetail = () => {
                 setReviewsVal(response.data.reviews)
                 if (response.data.reviews.length !== 0) {
                     const totalRating = response.data.reviews.reduce((acc, review) => acc + review.rating, 0);
-                    setCurrRating(totalRating / response.data.reviews.length)
+                    setCurrRating((totalRating / response.data.reviews.length).toFixed(2))
                 }
             })
             .catch(error => {
@@ -133,8 +133,8 @@ const ItemDetail = () => {
                                 <Grid.Row divided>
                                     <Header as='h2'>{book.title.toUpperCase()}</Header>
                                     <Grid.Column width={5}>
-                                        <span><Rating icon='star' rating={currRating} maxRating={5} disabled /></span>
-                                        <span>{reviewsVal === null ? 0 : reviewsVal.length} đánh giá</span>
+                                        <span><Rating icon='star' rating={1} maxRating={1} disabled />{currRating} Sao</span>
+                                        <span> ({reviewsVal === null ? 0 : reviewsVal.length} đánh giá)</span>
                                     </Grid.Column>
                                     <Grid.Column width={3}>
                                         Đã bán: 0

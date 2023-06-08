@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { storeApi } from '../misc/StoreApi';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { handleLogError } from '../utils/Helpers'
-import { Button, Container, Form, Grid, Header, Image, Label } from 'semantic-ui-react';
+import { Button, Container, Form, Grid, Header, Image, Label, Message } from 'semantic-ui-react';
 
 const BookEdit = () => {
     const { getUser } = useAuth()
@@ -31,6 +31,13 @@ const BookEdit = () => {
         { key: 'Khoa học', value: 'Khoa học', text: 'Khoa học' },
         { key: 'Văn học Việt Nam', value: 'Văn học Việt Nam', text: 'Văn học Việt Nam' },
     ]
+
+    const [isError, setIsError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [titleError, setTitleError] = useState('');
+    const [authorError, setAuthorError] = useState('');
+    const [releaseDateError, setReleaseDateError] = useState('');
+
     useEffect(() => {
         setIsAdmin(user.data.rol[0] === 'ADMIN')
         if (id !== 'new') {
@@ -55,8 +62,14 @@ const BookEdit = () => {
     }
 
     const onChangeImage = (e) => {
+        const filePath = document.getElementById('upload').value
+        const allowedExtensions = /(\.jpg|\.png)$/i
+        if (!allowedExtensions.exec(filePath)) {
+            alert('Vui lòng chọn file có định dạng ảnh(.jpg, .png)')
+            return
+        }
+        
         const file = e.target.files[0];
-
         if (file) {
             const reader = new FileReader();
             reader.onload = handleReaderLoaded;
@@ -72,12 +85,67 @@ const BookEdit = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        setIsError(false);
+        setErrorMessage('');
+        setTitleError('');
+        setAuthorError('');
+        setReleaseDateError('');
+        let checkError = false
         if (book.id) {
             await storeApi.updateBook(user, book.id, book)
+                .catch((error) => {
+                    checkError = true
+                    handleLogError(error);
+                    const errorData = error.response;
+                    if (errorData.status === 400) {
+                        if (errorData.data.fieldErrors) {
+                            errorData.data.fieldErrors.forEach(fieldError => {
+                                if (fieldError.field === 'title') {
+                                    setTitleError(fieldError.message);
+                                } else if (fieldError.field === 'author') {
+                                    setAuthorError(fieldError.message);
+                                } else if (fieldError.field === 'releaseDate') {
+                                    setReleaseDateError(fieldError.message);
+                                }
+                            })
+                        }
+                    } else if (errorData.status === 409) {
+                        setErrorMessage(errorData.data);
+                        setIsError(true);
+                    } else {
+                        setErrorMessage('Lỗi');
+                        setIsError(true);
+                    }
+                })
         } else {
             await storeApi.createBook(user, book)
+                .catch((error) => {
+                    checkError = true
+                    handleLogError(error);
+                    const errorData = error.response;
+                    if (errorData.status === 400) {
+                        if (errorData.data.fieldErrors) {
+                            errorData.data.fieldErrors.forEach(fieldError => {
+                                if (fieldError.field === 'title') {
+                                    setTitleError(fieldError.message);
+                                } else if (fieldError.field === 'author') {
+                                    setAuthorError(fieldError.message);
+                                } else if (fieldError.field === 'releaseDate') {
+                                    setReleaseDateError(fieldError.message);
+                                }
+                            })
+                        }
+                    } else if (errorData.status === 409) {
+                        setErrorMessage(errorData.data);
+                        setIsError(true);
+                    } else {
+                        setErrorMessage('Lỗi');
+                        setIsError(true);
+                    }
+                })
         }
-        navigate('/books');
+        if (!checkError)
+            navigate('/books')
     }
 
     return (
@@ -89,12 +157,21 @@ const BookEdit = () => {
                         <Grid.Row>
                             <Grid.Column width={8}>
                                 <Form.Group widths='equal'>
-                                    <Form.Input fluid className='required' label='Tiêu đề' name='title' placeholder='Tiêu đề' value={book.title} onChange={handleChange} readOnly={viewMode} />
-                                    <Form.Input fluid className='required' label='Tác giả' name='author' placeholder='Tác giả' value={book.author} onChange={handleChange} readOnly={viewMode} />
+                                    <Form.Field>
+                                        <Form.Input fluid className='required' label='Tiêu đề' name='title' placeholder='Tiêu đề' value={book.title} onChange={handleChange} readOnly={viewMode} />
+                                        { titleError && <span style={{ color: 'red', fontSize: '12px' }}>{titleError}</span> }
+                                    </Form.Field>
+                                    <Form.Field>
+                                        <Form.Input fluid className='required' label='Tác giả' name='author' placeholder='Tác giả' value={book.author} onChange={handleChange} readOnly={viewMode} />
+                                        { authorError && <span style={{ color: 'red', fontSize: '12px' }}>{authorError}</span> }
+                                    </Form.Field>
                                 </Form.Group>
                                 <Form.TextArea label='Mô tả' name='description' placeholder="Mô tả" value={book.description} onChange={handleChange} readOnly={viewMode} />
                                 <Form.Group widths='equal'>
-                                    <Form.Input fluid className='required' label='Ngày phát hành' name='releaseDate' type='date' value={book.releaseDate} onChange={handleChange} readOnly={viewMode} />
+                                    <Form.Field>
+                                        <Form.Input fluid className='required' label='Ngày phát hành' name='releaseDate' type='date' value={book.releaseDate} onChange={handleChange} readOnly={viewMode} />
+                                        { releaseDateError && <span style={{ color: 'red', fontSize: '12px' }}>{releaseDateError}</span> }
+                                    </Form.Field>
                                     <Form.Input fluid label='Số trang' name='pageNum' type='number' value={book.pageNum} onChange={handleChange} readOnly={viewMode} />
                                 </Form.Group>
                                 <Form.Group widths='equal'>
@@ -144,7 +221,9 @@ const BookEdit = () => {
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
-                            <Grid.Column width={8} />
+                            <Grid.Column width={8}>
+                                {isError && <Message negative>{errorMessage}</Message>}
+                            </Grid.Column>
                             <Grid.Column width={6}>
                                 {viewMode ?
                                     <Form.Button primary type='button' floated='right' onClick={(e) => { e.preventDefault(); setViewMode(false); }}>Edit</Form.Button> :

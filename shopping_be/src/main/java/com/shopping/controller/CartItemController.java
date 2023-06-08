@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import com.shopping.controller.payload.*;
+import com.shopping.controller.dto.*;
 import com.shopping.mapper.*;
 import com.shopping.model.*;
 import com.shopping.security.CustomUserDetails;

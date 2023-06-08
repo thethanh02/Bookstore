@@ -80,7 +80,7 @@ const OrderManagerPage = () => {
     if (orders === null || orders.length === 0) {
         orderList = (
             <Table.Row key='no-order'>
-                <Table.Cell collapsing textAlign='center' colSpan='5'>No order</Table.Cell>
+                <Table.Cell collapsing textAlign='center' colSpan='6'>No order</Table.Cell>
             </Table.Row>
         )
     } else {

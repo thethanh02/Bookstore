@@ -32,11 +32,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean hasUserWithEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
-
-    @Override
     public User validateAndGetUserByUsername(String username) {
         return getUserByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("User with username %s not found", username)));

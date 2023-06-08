@@ -1,4 +1,4 @@
-package com.shopping.controller.payload;
+package com.shopping.controller.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

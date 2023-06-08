@@ -18,4 +18,8 @@ public interface BookService {
 	
 	void deleteBook(Book book);
 	
+	boolean hasBookWithTitleAndAuthor(Book book);
+	
+	boolean hasBookWithTitleAndAuthorAndIdNot(Book book);
+	
 }

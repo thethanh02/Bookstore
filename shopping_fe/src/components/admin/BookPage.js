@@ -53,6 +53,7 @@ const BookPage = () => {
         const { checked } = e.target
         setViewTable(checked)
     }
+
     if (!viewTable) {
         let bookList
         if (books.length === 0) {
@@ -72,6 +73,7 @@ const BookPage = () => {
                         <Table.Cell>{moment(book.releaseDate).format('DD/MM/YYYY')}</Table.Cell>
                         <Table.Cell>{book.pageNum}</Table.Cell>
                         <Table.Cell>{book.category}</Table.Cell>
+                        <Table.Cell>{book.sold}</Table.Cell>
                         <Table.Cell>{book.imgUrl !== '' && <Image src={book.imgUrl} size="tiny" rounded />}</Table.Cell>
                         <Table.Cell collapsing>
                             <Button
@@ -99,7 +101,7 @@ const BookPage = () => {
             <Container>
                 <h2>Books</h2>
                 <Button primary icon labelPosition='right' as={Link} to={'/books/new'}>
-                    Create<Icon name='add' />
+                    Tạo mới<Icon name='add' />
                 </Button>
                 <Checkbox label='Other view' name='viewTable' id='viewTable' check={viewTable} onChange={onChangeViewTable} autoComplete='viewTable' />
                 <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
@@ -107,13 +109,14 @@ const BookPage = () => {
                         <Table.Header style={{ position: 'sticky', top: 0, zIndex: 1 }}>
                             <Table.Row>
                                 <Table.HeaderCell width={1}>ID</Table.HeaderCell>
-                                <Table.HeaderCell width={2}>Title</Table.HeaderCell>
-                                <Table.HeaderCell width={2}>Author</Table.HeaderCell>
-                                <Table.HeaderCell width={4}>Description</Table.HeaderCell>
-                                <Table.HeaderCell width={2}>Release Date</Table.HeaderCell>
-                                <Table.HeaderCell width={1}>Page</Table.HeaderCell>
-                                <Table.HeaderCell width={1}>Category</Table.HeaderCell>
-                                <Table.HeaderCell width={1}>Image</Table.HeaderCell>
+                                <Table.HeaderCell width={2}>Tiêu đề</Table.HeaderCell>
+                                <Table.HeaderCell width={2}>Tác giả</Table.HeaderCell>
+                                <Table.HeaderCell width={4}>Mô tả</Table.HeaderCell>
+                                <Table.HeaderCell width={2}>Ngày phát hành</Table.HeaderCell>
+                                <Table.HeaderCell width={1}>Số trang</Table.HeaderCell>
+                                <Table.HeaderCell width={1}>Thể loại</Table.HeaderCell>
+                                <Table.HeaderCell width={1}>Đã bán</Table.HeaderCell>
+                                <Table.HeaderCell width={1}>Bìa</Table.HeaderCell>
                                 <Table.HeaderCell width={1} />
                             </Table.Row>
                         </Table.Header>

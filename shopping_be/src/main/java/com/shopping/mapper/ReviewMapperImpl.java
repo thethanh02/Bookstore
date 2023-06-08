@@ -2,7 +2,7 @@ package com.shopping.mapper;
 
 import org.springframework.stereotype.Service;
 
-import com.shopping.controller.payload.*;
+import com.shopping.controller.dto.*;
 import com.shopping.model.Review;
 
 @Service

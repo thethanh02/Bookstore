@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.shopping.controller.payload.OrderDto;
-import com.shopping.controller.payload.OrderRequest;
+import com.shopping.controller.dto.OrderDto;
+import com.shopping.controller.dto.OrderRequest;
 import com.shopping.model.Order;
 import com.shopping.model.OrderItem;
 import com.shopping.model.User;

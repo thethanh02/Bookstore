@@ -1,6 +1,6 @@
 package com.shopping.mapper;
 
-import com.shopping.controller.payload.*;
+import com.shopping.controller.dto.*;
 import com.shopping.model.Review;
 
 public interface ReviewMapper {

@@ -1,6 +1,6 @@
 package com.shopping.mapper;
 
-import com.shopping.controller.payload.CartItemDto;
+import com.shopping.controller.dto.CartItemDto;
 import com.shopping.model.CartItem;
 import com.shopping.model.User;
 

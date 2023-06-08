@@ -1,4 +1,4 @@
-package com.shopping.controller.payload;
+package com.shopping.controller.dto;
 
 import java.time.ZonedDateTime;
 

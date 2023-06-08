@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.http.HttpStatus;
 
-import com.shopping.controller.payload.*;
+import com.shopping.controller.dto.*;
 import com.shopping.mapper.ReviewMapper;
 import com.shopping.model.*;
 import com.shopping.security.CustomUserDetails;

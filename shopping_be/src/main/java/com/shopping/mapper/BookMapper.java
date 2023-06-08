@@ -1,7 +1,7 @@
 package com.shopping.mapper;
 
-import com.shopping.controller.payload.BookDto;
-import com.shopping.controller.payload.BookRequest;
+import com.shopping.controller.dto.BookDto;
+import com.shopping.controller.dto.BookRequest;
 import com.shopping.model.Book;
 
 public interface BookMapper {

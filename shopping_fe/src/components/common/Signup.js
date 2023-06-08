@@ -13,6 +13,10 @@ const Signup = () => {
     const [isLoggedIn, setLoggedIn] = useState(false);
     const [isError, setIsError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [usernameError, setUsernameError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [nameError, setNameError] = useState('');
+    const [emailError, setEmailError] = useState('');
 
     const Auth = useContext(AuthContext);
 
@@ -39,12 +43,12 @@ const Signup = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (!(username && password && name && email)) {
-            setIsError(true);
-            setErrorMessage('Please, inform all fields!');
-            return;
-        }
-
+        setIsError(false);
+        setErrorMessage('');
+        setUsernameError('');
+        setPasswordError('');
+        setNameError('');
+        setEmailError('');
         const user = { username, password, name, email };
         storeApi
             .signup(user)
@@ -58,21 +62,32 @@ const Signup = () => {
                 setUsername('');
                 setPassword('');
                 setLoggedIn(true);
-                setIsError(false);
-                setErrorMessage('');
             })
             .catch((error) => {
                 handleLogError(error);
                 if (error.response && error.response.data) {
-                    const errorData = error.response.data;
-                    let errorMessage = 'Invalid fields';
+                    const errorData = error.response;
                     if (errorData.status === 409) {
-                        errorMessage = errorData.message;
+                        setErrorMessage(errorData.data);
+                        setIsError(true);
                     } else if (errorData.status === 400) {
-                        errorMessage = errorData.errors[0].defaultMessage;
+                        if (errorData.data.fieldErrors) {
+                            errorData.data.fieldErrors.forEach(fieldError => {
+                                if (fieldError.field === 'username') {
+                                    setUsernameError(fieldError.message);
+                                } else if (fieldError.field === 'password') {
+                                    setPasswordError(fieldError.message);
+                                } else if (fieldError.field === 'name') {
+                                    setNameError(fieldError.message);
+                                } else if (fieldError.field === 'email') {
+                                    setEmailError(fieldError.message);
+                                }
+                            })
+                        }
+                    } else {
+                        setErrorMessage('Không hợp lệ');
+                        setIsError(true);
                     }
-                    setIsError(true);
-                    setErrorMessage(errorMessage);
                 }
             });
     };
@@ -95,6 +110,7 @@ const Signup = () => {
                                 value={username}
                                 onChange={handleInputChange}
                             />
+                            { usernameError && <span style={{ color: 'red', fontSize: '12px' }}>{usernameError}</span> }
                             <Form.Input
                                 fluid
                                 name="password"
@@ -105,6 +121,7 @@ const Signup = () => {
                                 value={password}
                                 onChange={handleInputChange}
                             />
+                            { passwordError && <span style={{ color: 'red', fontSize: '12px' }}>{passwordError}</span> }
                             <Form.Input
                                 fluid
                                 name="name"
@@ -114,6 +131,7 @@ const Signup = () => {
                                 value={name}
                                 onChange={handleInputChange}
                             />
+                            { nameError && <span style={{ color: 'red', fontSize: '12px' }}>{nameError}</span> }
                             <Form.Input
                                 fluid
                                 name="email"
@@ -123,15 +141,16 @@ const Signup = () => {
                                 value={email}
                                 onChange={handleInputChange}
                             />
+                            { emailError && <span style={{ color: 'red', fontSize: '12px' }}>{emailError}</span> }
                             <Button color="red" fluid size="large">
-                                Signup
+                                Đăng ký
                             </Button>
                         </Segment>
                     </Form>
                     <Message>
-                        Already have an account?{' '}
+                        Bạn đã có tài khoản?{' '}
                         <NavLink href="/login" color="blue" to="/login" as={NavLink}>
-                            Login
+                            Đăng nhập
                         </NavLink>
                     </Message>
                     {isError && <Message negative>{errorMessage}</Message>}

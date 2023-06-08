@@ -43,4 +43,14 @@ public class BookServiceImpl implements BookService {
 		bookRepository.delete(book);
 	}
 
+	@Override
+	public boolean hasBookWithTitleAndAuthor(Book book) {
+		return bookRepository.existsByTitleAndAuthor(book.getTitle(), book.getAuthor());
+	}
+
+	@Override
+	public boolean hasBookWithTitleAndAuthorAndIdNot(Book book) {
+		return bookRepository.existsByTitleAndAuthorAndIdNot(book.getTitle(), book.getAuthor(), book.getId());
+	}
+
 }

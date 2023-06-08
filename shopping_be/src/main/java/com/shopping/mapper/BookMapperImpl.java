@@ -4,10 +4,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.shopping.controller.payload.BookDto;
-import com.shopping.controller.payload.BookRequest;
-import com.shopping.controller.payload.ReviewDto;
+import com.shopping.controller.dto.BookDto;
+import com.shopping.controller.dto.BookRequest;
+import com.shopping.controller.dto.ReviewDto;
 import com.shopping.model.Book;
+import com.shopping.model.OrderItem;
 import com.shopping.model.Review;
 import com.shopping.service.BookService;
 
@@ -32,7 +33,13 @@ public class BookMapperImpl implements BookMapper {
 		if (book == null)
 			return null;
 		List<ReviewDto> reviews = book.getReviews().stream().map(this::toBookDtoReviewDto).toList();
-		return new BookDto(book.getId(), book.getTitle(), book.getAuthor(), book.getDescription(), book.getReleaseDate(), book.getPageNum(), book.getCategory(), book.getPrice(), book.getImgUrl(), reviews);
+		int sold = 0;
+		for (OrderItem orderItem : book.getOrderItems()) {
+			if (orderItem.getOrder().getStatus().equals("Đã giao hàng")) {
+				sold += 1;
+			}
+		}
+		return new BookDto(book.getId(), book.getTitle(), book.getAuthor(), book.getDescription(), book.getReleaseDate(), book.getPageNum(), book.getCategory(), book.getPrice(), book.getImgUrl(), reviews, sold);
 	}
 
 	private ReviewDto toBookDtoReviewDto(Review review) {

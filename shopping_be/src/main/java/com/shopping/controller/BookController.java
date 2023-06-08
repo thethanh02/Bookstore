@@ -11,11 +11,12 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.shopping.controller.payload.BookDto;
-import com.shopping.controller.payload.BookRequest;
+import com.shopping.controller.dto.BookDto;
+import com.shopping.controller.dto.BookRequest;
 import com.shopping.mapper.BookMapper;
 import com.shopping.model.Book;
 import com.shopping.service.BookService;
@@ -33,10 +34,11 @@ public class BookController {
     private final BookMapper bookMapper;
     
     @GetMapping
-    List<BookDto> getBooks() {
-        return bookService.getBooks().stream()
-                .map(bookMapper::toBookDto)
-                .collect(Collectors.toList());
+    ResponseEntity<List<BookDto>> getBooks() {
+        return ResponseEntity.ok(
+        		bookService.getBooks().stream()
+	                .map(bookMapper::toBookDto)
+	                .collect(Collectors.toList()));
     }
     
     @GetMapping("/{id}")
@@ -60,7 +62,7 @@ public class BookController {
     }
     
     @PostMapping("/new")
-    ResponseEntity<BookDto> createBook(@Valid @RequestBody BookRequest bookRequest) throws URISyntaxException {
+    ResponseEntity<?> createBook(@Valid @RequestBody BookRequest bookRequest) throws URISyntaxException {
     	String imgBase64 = bookRequest.getImgUrl();
     	if (Base64Detect.isBase64(imgBase64)) {
             byte[] decodedBytes = Base64.getDecoder().decode(imgBase64);
@@ -78,13 +80,16 @@ public class BookController {
 
     	}
     	Book book = bookMapper.toBook(bookRequest);
+    	if (bookService.hasBookWithTitleAndAuthor(book)) {
+    		return ResponseEntity.status(HttpStatus.CONFLICT).body("Sách này đã tồn tại");
+    	}
     	Book result = bookService.saveBook(book);
     	return ResponseEntity.created(new URI("/api/books/" + result.getId()))
                 .body(bookMapper.toBookDto(result));
     }
     
     @PutMapping("/{id}")
-    ResponseEntity<BookDto> updateBook(@Valid @RequestBody BookRequest bookRequest) {
+    ResponseEntity<?> updateBook(@Valid @RequestBody BookRequest bookRequest) {
     	String imgBase64 = bookRequest.getImgUrl();
     	String imgUrlString = bookService.validateAndGetBookById(bookRequest.getId().toString()).getImgUrl();
     	if (Base64Detect.isBase64(imgBase64)) {
@@ -101,6 +106,9 @@ public class BookController {
 
     	}
     	Book book = bookMapper.toUpdatedBook(bookRequest);
+    	if (bookService.hasBookWithTitleAndAuthorAndIdNot(book)) {
+    		return ResponseEntity.status(HttpStatus.CONFLICT).body("Sách này đã tồn tại");
+    	}
     	Book result = bookService.saveBook(book);
     	return ResponseEntity.ok().body(bookMapper.toBookDto(result));
     }

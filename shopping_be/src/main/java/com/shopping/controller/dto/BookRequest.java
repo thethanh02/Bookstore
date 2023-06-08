@@ -1,4 +1,4 @@
-package com.shopping.controller.payload;
+package com.shopping.controller.dto;
 
 import java.sql.Date;
 
@@ -10,12 +10,12 @@ import lombok.Data;
 public class BookRequest {
 	
 	private Long id;
-	@NotBlank
+	@NotBlank(message = "tiêu đề không được để trống")
 	private String title;
-	@NotBlank
+	@NotBlank(message = "tác giả không được để trống")
 	private String author;
 	private String description;
-	@NotNull
+	@NotNull(message = "ngày phát hành không được để trống")
 	private Date releaseDate;
 	private int pageNum;
 	private String category;

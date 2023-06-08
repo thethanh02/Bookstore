@@ -1,4 +1,4 @@
-package com.shopping.controller.payload;
+package com.shopping.controller.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,7 @@ public class OrderRequest {
 	private String phoneNum;
 	@NotBlank
 	private String address;
+	@NotBlank
 	private String paymentMethod;
 
     private List<CartItemDto> cartItems = new ArrayList<>();

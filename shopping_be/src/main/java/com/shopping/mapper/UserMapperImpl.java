@@ -4,12 +4,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.shopping.controller.dto.CartItemDto;
+import com.shopping.controller.dto.UserDto;
 import com.shopping.model.*;
 
 import lombok.RequiredArgsConstructor;
-
-import com.shopping.controller.payload.CartItemDto;
-import com.shopping.controller.payload.UserDto;
 
 @RequiredArgsConstructor
 @Service

@@ -11,8 +11,11 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isLoggedIn, setLoggedIn] = useState(false);
-    const [isError, setError] = useState(false);
     const { cartItems, setCartItems } = useShoppingCart();
+    const [isError, setIsError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [usernameError, setUsernameError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
 
     useEffect(() => {
         const isLoggedIn = userIsAuthenticated();
@@ -30,11 +33,10 @@ const Login = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (!(username && password)) {
-            setError(true);
-            return;
-        }
-
+        setIsError(false);
+        setErrorMessage('');
+        setUsernameError('');
+        setPasswordError('');
         storeApi
             .authenticate(username, password)
             .then((response) => {
@@ -62,62 +64,73 @@ const Login = () => {
                 setUsername('');
                 setPassword('');
                 setLoggedIn(true);
-                setError(false);
             })
             .catch((error) => {
                 handleLogError(error);
-                setError(true);
-            });
-    };
+                const errorData = error.response;
+                if (errorData.status === 400) {
+                    if (errorData.data.fieldErrors) {
+                        errorData.data.fieldErrors.forEach(fieldError => {
+                            if (fieldError.field === 'username') {
+                                setUsernameError(fieldError.message);
+                            } else if (fieldError.field === 'password') {
+                                setPasswordError(fieldError.message);
+                            }
+                        })
+                    }
+                } else {
+                    setErrorMessage('Tài khoản hoặc mật khẩu không chính xác');
+                    setIsError(true);
+                }
+    });
+};
 
-    if (isLoggedIn) {
-        return <Navigate to={'/'} />;
-    } else {
-        return (
-            <Grid textAlign='center'>
-                <Grid.Column style={{ maxWidth: 450 }}>
-                    <Form size='large' onSubmit={handleSubmit}>
-                        <Segment>
-                            <Form.Input
-                                fluid
-                                autoFocus
-                                name='username'
-                                icon='user'
-                                iconPosition='left'
-                                placeholder='Username'
-                                value={username}
-                                onChange={handleInputChange}
-                            />
-                            <Form.Input
-                                fluid
-                                name='password'
-                                icon='lock'
-                                iconPosition='left'
-                                placeholder='Password'
-                                type='password'
-                                value={password}
-                                onChange={handleInputChange}
-                            />
-                            <Button color='red' fluid size='large'>
-                                Login
-                            </Button>
-                        </Segment>
-                    </Form>
-                    <Message>
-                        {"Don't have already an account? "}
-                        <a href='/signup' color='blue' as={NavLink} to='/signup'>
-                            Sign Up
-                        </a>
-                    </Message>
-                    {isError && (
-                        <Message negative>
-                            The username or password provided is incorrect!
-                        </Message>
-                    )}
-                </Grid.Column>
-            </Grid>
-        );
-    }
+if (isLoggedIn) {
+    return <Navigate to={'/'} />;
+} else {
+    return (
+        <Grid textAlign='center'>
+            <Grid.Column style={{ maxWidth: 450 }}>
+                <Form size='large' onSubmit={handleSubmit}>
+                    <Segment>
+                        <Form.Input
+                            fluid
+                            autoFocus
+                            name='username'
+                            icon='user'
+                            iconPosition='left'
+                            placeholder='Username'
+                            value={username}
+                            onChange={handleInputChange}
+                        />
+                        { usernameError && <span style={{ color: 'red', fontSize: '12px' }}>{usernameError}</span> }
+                        <Form.Input
+                            fluid
+                            name='password'
+                            icon='lock'
+                            iconPosition='left'
+                            placeholder='Password'
+                            type='password'
+                            value={password}
+                            onChange={handleInputChange}
+                        />
+                        { passwordError && <span style={{ color: 'red', fontSize: '12px' }}>{passwordError}</span> }
+                        <Button color='red' fluid size='large'>
+                            Đăng nhập
+                        </Button>
+                    </Segment>
+                </Form>
+                <Message>
+                    {"Bạn chưa có tài khoản? "}
+                    <a href='/signup' color='blue' as={NavLink} to='/signup'>
+                        Đăng ký
+                    </a>
+                </Message>
+                {isError && <Message negative>{errorMessage}</Message>}
+            </Grid.Column>
+        </Grid>
+    );
+}
 };
 
 export default Login;
