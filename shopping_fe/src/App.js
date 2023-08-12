@@ -5,6 +5,7 @@ import PrivateRoute from './components/misc/PrivateRoute'
 import Navbar from './components/misc/Navbar'
 import Store from './components/common/Store'
 import Login from './components/common/Login'
+import OAuth2Redirect from './components/common/OAuth2Redirect'
 import Signup from './components/common/Signup'
 import BookPage from './components/admin/BookPage'
 import BookEdit from './components/admin/BookEdit'
@@ -27,6 +28,7 @@ function App() {
                             <Route path='/products/:id' element={<ItemDetail />} />
                             <Route path='/login' element={<Login />} />
                             <Route path='/signup' element={<Signup />} />
+                            <Route path='/oauth2/redirect' element={<OAuth2Redirect />} />
                             <Route path="/admin/users" element={<PrivateRoute><UserManagerPage /></PrivateRoute>} />
                             <Route path="/admin/books" element={<BookPage />} />
                             <Route path="/admin/orders" element={<PrivateRoute><OrderManagerPage /></PrivateRoute>} />

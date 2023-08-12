@@ -25,6 +25,10 @@ import com.shopping.utils.Base64Detect;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import static com.shopping.config.SwaggerConfig.BEARER_KEY_SECURITY_SCHEME;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/books")
@@ -46,6 +50,7 @@ public class BookController {
         return bookMapper.toBookDto(bookService.validateAndGetBookById(id));
     }
 
+    @Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
     @DeleteMapping("/{id}")
     BookDto deleteBooks(@PathVariable String id) {
         Book book = bookService.validateAndGetBookById(id.toString());
@@ -61,6 +66,7 @@ public class BookController {
         return bookMapper.toBookDto(book);
     }
     
+    @Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
     @PostMapping("/new")
     ResponseEntity<?> createBook(@Valid @RequestBody BookRequest bookRequest) throws URISyntaxException {
     	String imgBase64 = bookRequest.getImgUrl();
@@ -88,6 +94,7 @@ public class BookController {
                 .body(bookMapper.toBookDto(result));
     }
     
+    @Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
     @PutMapping("/{id}")
     ResponseEntity<?> updateBook(@Valid @RequestBody BookRequest bookRequest) {
     	String imgBase64 = bookRequest.getImgUrl();

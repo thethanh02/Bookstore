@@ -9,6 +9,19 @@ spring:
     url: jdbc:mysql://localhost:3306/jdbc_test
     username: root
     password: a123456
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: ${GITHUB_CLIENT_ID}
+            clientSecret: ${GITHUB_CLIENT_SECRET}
+            scope: read:user, user:email
+          google:
+            clientId: 741063309148-4oghqqlus6lf5on1vj0vdc4okhcpmtmu.apps.googleusercontent.com
+            clientSecret: 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
+            scope: profile, email
+
 
 app:
   jwt:
@@ -17,6 +30,8 @@ app:
     secret: v9y$B&E)H@MbQeThWmZq4t7w!z%C*F-JaNdRfUjXn2r5u8x/A?D(G+KbPeShVkYp
     expiration:
       minutes: 60
+  oauth2:
+    redirectUri: http://localhost:3000/oauth2/redirect
   cors:
     allowed-origins: http://localhost:3000
 

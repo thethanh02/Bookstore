@@ -1,5 +1,7 @@
 package com.shopping.controller;
 
+import static com.shopping.config.SwaggerConfig.BEARER_KEY_SECURITY_SCHEME;
+
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -13,6 +15,9 @@ import com.shopping.model.*;
 import com.shopping.security.CustomUserDetails;
 import com.shopping.service.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -24,10 +29,11 @@ public class OrderController {
 	private final OrderMapper orderMapper;
 	private final OrderService orderService;
 	
+	@Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/new")
 	public OrderDto addOrder(@AuthenticationPrincipal CustomUserDetails currentUser,
-									@RequestBody OrderRequest createOrderRequest) {
+									@Valid @RequestBody OrderRequest createOrderRequest) {
 		User user = userService.validateAndGetUserByUsername(currentUser.getUsername());
 		Order order = orderMapper.toOrder(createOrderRequest);
 		order.setStatus("Đang xác nhận");
@@ -40,6 +46,7 @@ public class OrderController {
     	return orderMapper.toOrderDto(orderService.saveOrder(order));
     }
 	
+	@Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
 	@GetMapping("/me")
 	public List<OrderDto> getOrders(@AuthenticationPrincipal CustomUserDetails currentUser) {
 		User user = userService.validateAndGetUserByUsername(currentUser.getUsername());
@@ -47,6 +54,7 @@ public class OrderController {
     	return result;
     }
 	
+	@Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
 	@GetMapping("/{id}")
 	public OrderDto getOrder(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable String id) {
 		User user = userService.validateAndGetUserByUsername(currentUser.getUsername());
@@ -59,6 +67,7 @@ public class OrderController {
     	return orderMapper.toOrderDto(order);
     }
 	
+	@Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
 	@PutMapping
 	public OrderDto setOrderStatus(@AuthenticationPrincipal CustomUserDetails currentUser, @RequestBody OrderStatusRequest orderStatusRequest) {
 		User user = userService.validateAndGetUserByUsername(currentUser.getUsername());
@@ -88,6 +97,7 @@ public class OrderController {
     	return orderMapper.toOrderDto(order);
     }
 	
+	@Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
 	@GetMapping("/all")
 	public List<OrderDto> getAllOrders() {
 		List<OrderDto> result = orderService.getAllOrders().stream().map(orderMapper::toOrderDto).toList();

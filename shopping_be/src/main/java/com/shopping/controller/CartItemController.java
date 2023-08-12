@@ -1,5 +1,7 @@
 package com.shopping.controller;
 
+import static com.shopping.config.SwaggerConfig.BEARER_KEY_SECURITY_SCHEME;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,8 @@ import com.shopping.model.*;
 import com.shopping.security.CustomUserDetails;
 import com.shopping.service.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -23,6 +27,7 @@ public class CartItemController {
 	private final CartItemService cartItemService;
 	private final CartItemMapper cartItemMapper;
 
+	@Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
 	@PostMapping
 	public List<CartItemDto> addCartItem(@AuthenticationPrincipal CustomUserDetails currentUser,
 									@RequestBody CartItemDto cartItemDto) {
@@ -49,6 +54,7 @@ public class CartItemController {
 		}
     }
 	
+	@Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/newlist")
 	public List<CartItemDto> addListCartItem(@AuthenticationPrincipal CustomUserDetails currentUser,
@@ -62,6 +68,7 @@ public class CartItemController {
 		return newCartItemDtos;
     }
 	
+	@Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
 	@DeleteMapping("/{id}")
 	public CartItemDto deleteCartItem(@AuthenticationPrincipal CustomUserDetails currentUser,
 									@PathVariable String id) {
@@ -74,6 +81,7 @@ public class CartItemController {
     	return cartItemMapper.toCartItemDto(cartItem);
 	}
 	
+	@Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
 	@DeleteMapping("/all")
 	public void deleteAllCartItem(@AuthenticationPrincipal CustomUserDetails currentUser) {
 		User user = userService.validateAndGetUserByUsername(currentUser.getUsername());

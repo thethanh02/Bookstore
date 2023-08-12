@@ -42,6 +42,10 @@ const Checkout = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        setNameError('');
+        setPhoneNumError('');
+        setAddressError('');
+        setPaymentMethodError('');
         let checkError = false
         await storeApi.addOrder(user, order)
         .catch((error) => {

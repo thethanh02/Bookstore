@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { NavLink, Navigate } from 'react-router-dom';
-import { Button, Form, Grid, Segment, Message } from 'semantic-ui-react';
+import { Button, Form, Grid, Segment, Message, Menu, Icon, Divider } from 'semantic-ui-react';
 import AuthContext from '../context/AuthContext';
 import { storeApi } from '../misc/StoreApi';
-import { parseJwt, handleLogError } from '../utils/Helpers';
+import { parseJwt, handleLogError, getSocialLoginUrl } from '../utils/Helpers';
 import { useShoppingCart } from '../context/ShoppingCartContext';
 
 const Login = () => {
@@ -82,55 +82,72 @@ const Login = () => {
                     setErrorMessage('Tài khoản hoặc mật khẩu không chính xác');
                     setIsError(true);
                 }
-    });
-};
+            });
+    };
 
-if (isLoggedIn) {
-    return <Navigate to={'/'} />;
-} else {
-    return (
-        <Grid textAlign='center'>
-            <Grid.Column style={{ maxWidth: 450 }}>
-                <Form size='large' onSubmit={handleSubmit}>
-                    <Segment>
-                        <Form.Input
-                            fluid
-                            autoFocus
-                            name='username'
-                            icon='user'
-                            iconPosition='left'
-                            placeholder='Username'
-                            value={username}
-                            onChange={handleInputChange}
-                        />
-                        { usernameError && <span style={{ color: 'red', fontSize: '12px' }}>{usernameError}</span> }
-                        <Form.Input
-                            fluid
-                            name='password'
-                            icon='lock'
-                            iconPosition='left'
-                            placeholder='Password'
-                            type='password'
-                            value={password}
-                            onChange={handleInputChange}
-                        />
-                        { passwordError && <span style={{ color: 'red', fontSize: '12px' }}>{passwordError}</span> }
-                        <Button color='red' fluid size='large'>
-                            Đăng nhập
-                        </Button>
-                    </Segment>
-                </Form>
-                <Message>
-                    {"Bạn chưa có tài khoản? "}
-                    <a href='/signup' color='blue' as={NavLink} to='/signup'>
-                        Đăng ký
-                    </a>
-                </Message>
-                {isError && <Message negative>{errorMessage}</Message>}
-            </Grid.Column>
-        </Grid>
-    );
-}
+    if (isLoggedIn) {
+        return <Navigate to={'/'} />;
+    } else {
+        return (
+            <Grid textAlign='center'>
+                <Grid.Column style={{ maxWidth: 450 }}>
+                    <Form size='large' onSubmit={handleSubmit}>
+                        <Segment>
+                            <Form.Input
+                                fluid
+                                autoFocus
+                                name='username'
+                                icon='user'
+                                iconPosition='left'
+                                placeholder='Username'
+                                value={username}
+                                onChange={handleInputChange}
+                            />
+                            {usernameError && <span style={{ color: 'red', fontSize: '12px' }}>{usernameError}</span>}
+                            <Form.Input
+                                fluid
+                                name='password'
+                                icon='lock'
+                                iconPosition='left'
+                                placeholder='Password'
+                                type='password'
+                                value={password}
+                                onChange={handleInputChange}
+                            />
+                            {passwordError && <span style={{ color: 'red', fontSize: '12px' }}>{passwordError}</span>}
+                            <Button color='red' fluid size='large'>
+                                Đăng nhập
+                            </Button>
+                        </Segment>
+                    </Form>
+                    <Message>
+                        {"Bạn chưa có tài khoản? "}
+                        <a href='/signup' color='blue' as={NavLink} to='/signup'>
+                            Đăng ký
+                        </a>
+                    </Message>
+                    {isError && <Message negative>{errorMessage}</Message>}
+
+                    <Divider horizontal>or connect with</Divider>
+
+                    <Menu compact icon='labeled'>
+                        <Menu.Item name='github' href={getSocialLoginUrl('github')} disabled >
+                            <Icon name='github' />Github
+                        </Menu.Item>
+                        <Menu.Item name='google' href={getSocialLoginUrl('google')}>
+                            <Icon name='google' />Google
+                        </Menu.Item>
+                        <Menu.Item name='facebook'>
+                            <Icon name='facebook' disabled />Facebook
+                        </Menu.Item>
+                        <Menu.Item name='instagram'>
+                            <Icon name='instagram' disabled />Instagram
+                        </Menu.Item>
+                    </Menu>
+                </Grid.Column>
+            </Grid>
+        );
+    }
 };
 
 export default Login;

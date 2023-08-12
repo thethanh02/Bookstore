@@ -54,7 +54,7 @@ const BookPage = () => {
         if (books.length === 0) {
             bookList = (
                 <Table.Row key='no-book'>
-                    <Table.Cell collapsing textAlign='center' colSpan='5'>No book</Table.Cell>
+                    <Table.Cell collapsing textAlign='center' colSpan='9'>No book</Table.Cell>
                 </Table.Row>
             )
         } else {

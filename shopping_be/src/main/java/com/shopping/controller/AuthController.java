@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.shopping.controller.dto.*;
 import com.shopping.model.*;
 import com.shopping.security.*;
+import com.shopping.security.oauth2.OAuth2Provider;
 import com.shopping.service.*;
 
 @RequiredArgsConstructor
@@ -60,6 +61,7 @@ public class AuthController {
         user.setName(signUpRequest.getName());
         user.setEmail(signUpRequest.getEmail());
         user.setRole(SecurityConfig.USER);
+        user.setProvider(OAuth2Provider.LOCAL);
         return user;
     }
 }

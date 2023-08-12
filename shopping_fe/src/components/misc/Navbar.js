@@ -31,7 +31,7 @@ const Navbar = () => {
         return user && user.data.rol[0] === 'USER' ? { "display": "block" } : { "display": "none" }
     }
 
-    const getUserName = () => {
+    const getName = () => {
         const user = getUser()
         return user ? user.data.name : ''
     }
@@ -83,7 +83,7 @@ const Navbar = () => {
                         </Menu.Item>
                         <Menu.Item as={Link} to="/login" style={enterMenuStyle()} name='login' active={activeItem === 'login'} onClick={handleItemClick}>Đăng nhập</Menu.Item>
                         <Menu.Item as={Link} to="/signup" style={enterMenuStyle()} name='signup' active={activeItem === 'signup'} onClick={handleItemClick}>Đăng ký</Menu.Item>
-                        <Menu.Item header style={logoutMenuStyle()} name={`Hi ${getUserName()}`} />
+                        <Menu.Item header style={logoutMenuStyle()} name={`Hi ${getName()}`} />
                         <Menu.Item style={logoutMenuStyle()} name='logout' onClick={logout}>Đăng xuất</Menu.Item>
                     </Menu.Menu>
                 </Container>

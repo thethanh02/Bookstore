@@ -41,7 +41,7 @@ public class JwtTokenProvider {
                 .collect(Collectors.toList());
 
         byte[] signingKey = jwtSecret.getBytes();
-
+        System.out.println(user.getName());
         return Jwts.builder()
                 .setHeaderParam("typ", TOKEN_TYPE)
                 .signWith(Keys.hmacShaKeyFor(signingKey), SignatureAlgorithm.HS512)
