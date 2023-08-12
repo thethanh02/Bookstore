@@ -18,8 +18,8 @@ spring:
             clientSecret: ${GITHUB_CLIENT_SECRET}
             scope: read:user, user:email
           google:
-            clientId: 741063309148-4oghqqlus6lf5on1vj0vdc4okhcpmtmu.apps.googleusercontent.com
-            clientSecret: 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
+            clientId: ${GOOGLE_CLIENT_ID}
+            clientSecret: ${GOOGLE_CLIENT_SECRET}
             scope: profile, email
 
 
