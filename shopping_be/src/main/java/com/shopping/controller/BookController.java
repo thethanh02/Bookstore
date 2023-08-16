@@ -1,12 +1,7 @@
 package com.shopping.controller;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -20,6 +15,7 @@ import com.shopping.controller.dto.BookRequest;
 import com.shopping.mapper.BookMapper;
 import com.shopping.model.Book;
 import com.shopping.service.BookService;
+import com.shopping.service.CloudinaryService;
 import com.shopping.utils.Base64Detect;
 
 import jakarta.validation.Valid;
@@ -36,8 +32,9 @@ public class BookController {
 
     private final BookService bookService;
     private final BookMapper bookMapper;
+    private final CloudinaryService cloudinaryService;
     
-    @GetMapping
+    @GetMapping	
     ResponseEntity<List<BookDto>> getBooks() {
         return ResponseEntity.ok(
         		bookService.getBooks().stream()
@@ -52,18 +49,17 @@ public class BookController {
 
     @Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
     @DeleteMapping("/{id}")
-    BookDto deleteBooks(@PathVariable String id) {
+    ResponseEntity<?> deleteBooks(@PathVariable String id) {
         Book book = bookService.validateAndGetBookById(id.toString());
         bookService.deleteBook(book);
         
-        String filePath = "../shopping_fe/public" + book.getImgUrl();
-        Path path = Paths.get(filePath);
         try {
-            Files.delete(path);
-        } catch (Exception e) {
-            System.err.println("Không thể xóa file: " + e.getMessage());
-        }
-        return bookMapper.toBookDto(book);
+    		cloudinaryService.deleteImage(book.getImgUrl());
+    		bookService.deleteBook(book);
+    		return ResponseEntity.ok().build();
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().build();
+		}
     }
     
     @Operation(security = {@SecurityRequirement(name = BEARER_KEY_SECURITY_SCHEME)})
@@ -71,16 +67,9 @@ public class BookController {
     ResponseEntity<?> createBook(@Valid @RequestBody BookRequest bookRequest) throws URISyntaxException {
     	String imgBase64 = bookRequest.getImgUrl();
     	if (Base64Detect.isBase64(imgBase64)) {
-            byte[] decodedBytes = Base64.getDecoder().decode(imgBase64);
             try {
-            	String randomName = UUID.randomUUID().toString();
-            	String outputFilePath = "../shopping_fe/public/imgs/book" + randomName + ".jpg";
-            	Path outputPath = Paths.get(outputFilePath);
-				Files.write(outputPath, decodedBytes);
-				
-				String imgUrlString = "/imgs/book" + randomName + ".jpg";
-				bookRequest.setImgUrl(imgUrlString);
-			} catch (IOException e) {
+            	bookRequest.setImgUrl(cloudinaryService.uploadImage(imgBase64, UUID.randomUUID().toString()));
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
@@ -100,17 +89,11 @@ public class BookController {
     	String imgBase64 = bookRequest.getImgUrl();
     	String imgUrlString = bookService.validateAndGetBookById(bookRequest.getId().toString()).getImgUrl();
     	if (Base64Detect.isBase64(imgBase64)) {
-            byte[] decodedBytes = Base64.getDecoder().decode(imgBase64);
-            String outputFilePath = "../shopping_fe/public" + imgUrlString;
-            try {
-            	Path outputPath = Paths.get(outputFilePath);
-				Files.write(outputPath, decodedBytes);
-				
-				bookRequest.setImgUrl(imgUrlString);
-			} catch (IOException e) {
+    		try {
+    			bookRequest.setImgUrl(cloudinaryService.uploadImage(imgBase64, imgUrlString));
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
     	}
     	Book book = bookMapper.toUpdatedBook(bookRequest);
     	if (bookService.hasBookWithTitleAndAuthorAndIdNot(book)) {

@@ -8,6 +8,7 @@ import { useShoppingCart } from "../context/ShoppingCartContext"
 import moment from 'moment';
 import { useAuth } from '../context/AuthContext';
 import ItemReview from './ItemReview';
+import { getCloudinaryImg } from "../utils/cloudinaryUtils"
 
 const ItemDetail = () => {
     const { getUser, userIsAuthenticated } = useAuth()
@@ -125,7 +126,7 @@ const ItemDetail = () => {
             <Segment>
                 <Grid stackable>
                     <Grid.Column width={6}>
-                        <Image src={book.imgUrl} />
+                        <Image src={getCloudinaryImg(book.imgUrl)} />
                     </Grid.Column>
                     <Grid.Column width={10}>
                         <Container>

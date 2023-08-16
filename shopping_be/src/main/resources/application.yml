@@ -21,7 +21,10 @@ spring:
             clientId: ${GOOGLE_CLIENT_ID}
             clientSecret: ${GOOGLE_CLIENT_SECRET}
             scope: profile, email
-
+cloudinary:
+  cloud_name: ${CLOUD_NAME}
+  api_key: ${CLOUD_KEY}
+  api_secret: ${CLOUD_SECRET}
 
 app:
   jwt:

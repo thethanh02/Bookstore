@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Stack } from "react-bootstrap"
 import { useShoppingCart } from "../context/ShoppingCartContext"
 import { formatCurrency } from "../utils/formatCurrency"
+import { getCloudinaryImg } from "../utils/cloudinaryUtils"
 
 export function CartItem({ book, quantity, isDeleteBtnActive }) {
 
@@ -10,7 +11,7 @@ export function CartItem({ book, quantity, isDeleteBtnActive }) {
 
     return (
         <Stack direction="horizontal" gap={2} className="d-flex align-items-center">
-            <img src={book.imgUrl} style={{ height: "120px", objectFit: "cover", borderRadius: "4%" }} alt={book.title} ></img>
+            <img src={getCloudinaryImg(book.imgUrl)} style={{ height: "120px", objectFit: "cover", borderRadius: "4%" }} alt={book.title} ></img>
             <div className="me-auto">
                 <a href={`/products/${book.id}`}>
                     <div>
